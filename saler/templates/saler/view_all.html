@@ -1,0 +1,174 @@
+{% extends 'saler/base.html' %}
+{% load static %}
+{% block saler_head %}
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans">
+<style type="text/css">
+	.prod1212 .thumb-wrapper {
+		padding: 25px 15px;
+		background: #fff;
+		border-radius: 6px;
+		text-align: center;
+		position: relative;
+		box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+	}
+
+	.prod1212 .img-box {
+		height: 120px;
+		margin-bottom: 10px;
+		width: 100%;
+		position: relative;
+	}
+
+	.prod1212 img {
+		max-width: 100%;
+		max-height: 100%;
+		display: inline-block;
+		position: absolute;
+		bottom: 0;
+		margin: 0 auto;
+		left: 0;
+		right: 0;
+	}
+
+	.prod1212 h4 {
+		font-size: 18px;
+	}
+
+	.prod1212 h4,
+	.carouselp,
+	.carouselul {
+		margin-bottom: 5px;
+	}
+
+	.prod1212 .thumb-content .btn {
+		color: #be2714;
+		font-size: 11px;
+		text-transform: uppercase;
+		font-weight: bold;
+		background: none;
+		border: 1px solid #be2714;
+		padding: 6px 14px;
+		margin-top: 5px;
+		line-height: 16px;
+		border-radius: 20px;
+	}
+
+	.prod1212 .thumb-content .btn:hover,
+	.thumb-content .btn:focus {
+		color: #fff;
+		background: #be2714;
+		box-shadow: none;
+	}
+
+	.prod1212 .thumb-content .btn i {
+		font-size: 14px;
+		font-weight: bold;
+		margin-left: 5px;
+	}
+
+	h2 {
+		color: #000;
+		font-size: 26px;
+		font-weight: 300;
+		text-align: center;
+		text-transform: uppercase;
+		position: relative;
+	}
+
+	h2 b {
+		color: #be2714;
+	}
+
+	h2::after {
+		content: "";
+		width: 100px;
+		position: absolute;
+		margin: 0 auto;
+		height: 4px;
+		border-radius: 1px;
+		background: #be2714;
+		left: 0;
+		right: 0;
+		bottom: -5px;
+	}
+
+	.item-price {
+		font-size: 13px;
+		padding: 2px 0;
+	}
+
+	.prod1212 {
+		width: 185px;
+	}
+
+	@media(max-width: 700px) {
+		.prod1212 {
+			width: 185px;
+		}
+	}
+
+	@media(max-width: 399px) {
+		.prod1212 {
+			width: 160px;
+		}
+	}
+
+	@media(max-width: 359px) {
+		.prod1212 {
+			width: unset;
+		}
+	}
+</style>
+{% endblock saler_head %}
+{% block saler_body %}
+<div class="container-fluid">
+	<h2>All <b>{{catg}}</b> Products</h2>
+	<div class="row pt-1">
+		{% for i in product %}
+		<div class="p-1 prod1212">
+			<a href="{% url 'saler_home' %}product/{{i.product_id}}" style="text-decoration: none; color: #231f20">
+				<div class="thumb-wrapper">
+					<div class="img-box">
+						<img src="{{i.image1.url}}" class="img-responsive img-fluid" alt="">
+					</div>
+					<div class="thumb-content">
+						<small>{{i.product_name}}</small>
+						<p class="item-price"><span><i class="fa fa-inr" aria-hidden="true"></i>{{i.price}}</span></p>
+
+						<a id="{{i.product_id}}" class="btn btn-primary add_to_cart mt-0">Add to Cart</a>
+					</div>
+				</div>
+			</a>
+		</div>
+		{% endfor %}
+	</div>
+</div>
+{% endblock saler_body %}
+
+
+{% block saler_js %}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script type="text/javascript">
+	$('.add_to_cart').click(function () {
+		var catid = this.id.toString();
+		$.ajax(
+			{
+				type: "GET",
+				url: "/seller/add_to_cart",
+				data: {
+					prod_id: catid
+				},
+				success: function (data) {
+					$('#cart_no').text(data);
+					document.getElementById('wallet').style.left = '40px';
+				}
+			})
+	});
+</script>
+
+{% endblock saler_js %}

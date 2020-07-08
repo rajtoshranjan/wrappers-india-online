@@ -1,0 +1,118 @@
+{% extends 'saler/base.html' %}
+{% load static %}
+{% block saler_head %}
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans">
+<link rel="stylesheet" href="{% static 'saler/css/home_style.css' %}">
+<title>Wrappers|Dashboard </title>
+
+{% endblock saler_head %}
+{% block saler_body %}
+{% load app_tags %}
+<div class="container-fluid">
+	<h3 style="text-align: center;">Your Orders</h3>
+	<div style="text-align: center;" class="pb-1">
+	<a href="#" style="text-align: center;" class="btn btn-success" onclick="document.getElementById('odrs').style.display='block'; document.getElementById('dodrs').style.display='none';">View Orders</a>
+	<a href="#" style="text-align: center;" class="btn btn-success" onclick="document.getElementById('odrs').style.display='none'; document.getElementById('dodrs').style.display='block';">View All Delivered Products</a>
+	</div>
+	<div id="odrs">
+	{% for ord in orders %}
+	<div class="card mb-3" >
+	  <div class="row no-gutters">
+	    <div class="col-md-4">
+	    	 {% for item in ord.products|split:',' %}
+	        {% if item|product:'|'|slice:'0:1'|remfl:'2'%}
+	      <img src="{{item|product:'|'|slice:'1:2'|remfl:'2'}}" class="card-img" alt="..." style="max-height: 200px; width: auto;">
+	      	{% endif %}
+	      	{% endfor %}
+	    </div>
+	    <div class="col-md-8">
+	      <div class="card-body">
+	        <h5 class="card-title">Order Id : <strong>{{ord.order_id}}</strong></h5>
+	        {% for item in ord.products|split:',' %}
+	        {% if item|product:'|'|slice:'0:1'|remfl:'2'%}
+	        <p class="card-text m-0">Product Name: {{item|product:'|'|slice:'0:1'|remfl:'2'}}</p>
+	        {% endif %}
+	      	{% endfor %}
+	        <p class="card-text m-0"><b>size: {{ord.size}}</b> <b style="float: right;">Quantity: {{ord.size}}</b></p>
+	         {% for item in ord.products|split:',' %}
+	        {% if item|product:'|'|slice:'0:1'|remfl:'2'%}
+	        <p class="card-text"><small class="text-muted">Price: <i class="fa fa-inr" aria-hidden="true"></i>{{item|product:'|'|slice:'2:3'|remfl:'1'}}</small></p>
+	         {% endif %}
+	      	{% endfor %}
+	        <div style="float: right;">
+	        	{% if ord.status in '' %}
+	        	<form style="display: inline;">
+					<input type="text" name="odrr" value="{{ord.order_id}}" style="display: none;">
+					<input type="text" name="st" value="Accepted" style="display: none;">
+		        	<button type="submit" class="btn btn-outline-secondary">Accepted</button>
+		        </form>
+				{% endif %}
+
+		        {% if ord.status != 'Packed' and ord.status != 'Delivered' %}
+		        <form style="display: inline;">
+					<input type="text" name="odrr" value="{{ord.order_id}}" style="display: none;">
+					<input type="text" name="st" value="Packed" style="display: none;">
+					<button type="submit" class="btn btn-outline-success">Packed</button>
+				</form>
+				{% endif %}
+		        {% if ord.status != 'Delivered' %}
+		        <form style="display: inline;">
+					<input type="text" name="odrr" value="{{ord.order_id}}" style="display: none;">
+					<input type="text" name="st" value="Delivered" style="display: none;">
+					<button type="submit" class="btn btn-outline-warning">Delivered</button>
+				</form>
+				{% endif %}
+				<form style="display: inline;">
+					<input type="text" name="odrr" value="{{ord.order_id}}" style="display: none;">
+					<input type="text" name="st" value="Cancel" style="display: none;">
+					<button type="submit" class="btn btn-outline-danger">Cancel</button>
+				</form>
+			</div>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	{% endfor %}
+	</div>
+	<div id="dodrs" style="display: none;">
+		{% for ord in dorders %}
+	<div class="card mb-3" >
+	  <div class="row no-gutters">
+	    <div class="col-md-4">
+	    	 {% for item in ord.products|split:',' %}
+	        {% if item|product:'|'|slice:'0:1'|remfl:'2'%}
+	      <img src="{{item|product:'|'|slice:'1:2'|remfl:'2'}}" class="card-img" alt="..." style="max-height: 200px; width: auto;">
+	      	{% endif %}
+	      	{% endfor %}
+	    </div>
+	    <div class="col-md-8">
+	      <div class="card-body">
+	        <h5 class="card-title">Order Id : <strong>{{ord.order_id}}</strong></h5>
+	        {% for item in ord.products|split:',' %}
+	        {% if item|product:'|'|slice:'0:1'|remfl:'2'%}
+	        <p class="card-text m-0">Product Name: {{item|product:'|'|slice:'0:1'|remfl:'2'}}</p>
+	        {% endif %}
+	      	{% endfor %}
+	        <p class="card-text m-0"><b>size: {{ord.size}}</b> <b style="float: right;">Quantity: {{ord.size}}</b></p>
+	         {% for item in ord.products|split:',' %}
+	        {% if item|product:'|'|slice:'0:1'|remfl:'2'%}
+	        <p class="card-text"><small class="text-muted">Price: <i class="fa fa-inr" aria-hidden="true"></i>{{item|product:'|'|slice:'2:3'|remfl:'1'}}</small></p>
+	         {% endif %}
+	      	{% endfor %}
+	            </div>
+	    </div>
+	  </div>
+	</div>
+	{% endfor %}
+	</div>
+</div>
+{% endblock saler_body %}
+
+{% block saler_js %}
+	
+
+{% endblock saler_js %}

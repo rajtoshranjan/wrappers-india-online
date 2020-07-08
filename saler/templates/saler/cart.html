@@ -1,0 +1,179 @@
+{% extends 'saler/base.html' %}
+{% load static %}
+{% block saler_head %}
+<title>{{request.user.first_name}} Cart</title>
+<style type="text/css">
+  h2 {
+    color: #000;
+    font-size: 26px;
+    font-weight: 300;
+    text-align: center;
+    text-transform: uppercase;
+    position: relative;
+  }
+
+  h2 b {
+    color: #be2714;
+  }
+
+  h2::after {
+    content: "";
+    width: 100px;
+    position: absolute;
+    margin: 0 auto;
+    height: 4px;
+    border-radius: 1px;
+    background: #be2714;
+    left: 0;
+    right: 0;
+    bottom: -5px;
+  }
+</style>
+{% endblock saler_head %}
+{% block saler_body %}
+<div class="container-fluid">
+  <h2><b>My Cart</b>({{cart_element_no}})</h2>
+  <div class="row">
+    <div class="col-md-8  mt-1" style="overflow-y: scroll; max-height: 100%">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col" class="border-0 bg-light">
+                <div class="p-2 px-3 text-uppercase">Product</div>
+              </th>
+              <th scope="col" class="border-0 bg-light">
+                <div class="py-2 text-uppercase">Price</div>
+              </th>
+              <th scope="col" class="border-0 bg-light">
+                <div class="py-2 text-uppercase">Quantity</div>
+              </th>
+              <th scope="col" class="border-0 bg-light">
+                <div class="py-2 text-uppercase">Remove</div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for cprod, prod in allProds %}
+
+            <tr>
+              <th scope="row" class="border-0">
+                <div class="p-2">
+                  <img src="{{prod.image1.url}}" alt="" width="70" class="img-fluid rounded shadow-sm">
+                  <div class="ml-3 d-inline-block align-middle">
+                    <h5 class="mb-0"> <a href="#"
+                        class="text-dark d-inline-block align-middle">{{prod.product_name}}</a></h5><span
+                      class="text-muted font-weight-normal font-italic d-block">Category: {{prod.category}}</span>
+                  </div>
+                </div>
+              </th>
+              <td class="border-0 align-middle"><strong><i class="fa fa-inr"
+                    aria-hidden="true"></i>{{prod.price}}</strong></td>
+              <td class="border-0 align-middle"><i class="fa fa-plus-square plus_prod" product_id={{prod.product_id}}
+                  aria-hidden="true"></i> <strong>{{cprod.number}}</strong> <i class="fa fa-minus-square minus_prod"
+                  aria-hidden="true" product_id={{prod.product_id}}></i></td>
+              <td class="border-0 align-middle"><a href="#" class="text-dark delete" id="{{prod.product_id}}"><i
+                    class="fa fa-trash"></i></a></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="col-lg-4 bg-white rounded shadow-sm mt-1" style="height: 100%">
+      <div class="bg-light rounded-pill px-4 py-3 text-uppercase font-weight-bold mt-2">Order summary </div>
+      <div class="p-4">
+
+        <ul class="list-unstyled mb-4">
+          <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Order Subtotal
+            </strong><strong id="subtotal"><i class="fa fa-inr" aria-hidden="true"></i>{{subtotal}}</strong></li>
+          <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Shipping and
+              handling</strong><strong id="delev"><i class="fa fa-inr" aria-hidden="true"></i>{{delev}}</strong></li>
+          <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Tax</strong><strong
+              id="tax"><i class="fa fa-inr" aria-hidden="true"></i>{{tax}}</strong></li>
+          <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Total</strong>
+            <h5 class="font-weight-bold" id="total"><i class="fa fa-inr" aria-hidden="true"></i>{{total}}</h5>
+          </li>
+        </ul><a href="{% url 'checkout' %}" class="btn btn-dark rounded-pill py-2 btn-block">Procceed to checkout</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock saler_body %}
+
+{% block saler_js %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<!-- Js For Delete Element -->
+<script type="text/javascript">
+  $('.delete').click(function () {
+    var catid = this.id.toString();
+    $.ajax(
+      {
+        type: "GET",
+        url: "/seller/delete_from_cart",
+        data: {
+          prod_id: catid
+        },
+        success: function (data) {
+          $('#cart_no').text(data.len);
+          document.getElementById('subtotal').innerHTML = `<i class="fa fa-inr" aria-hidden="true"></i>${data.subtotal}`;
+          document.getElementById('total').innerHTML = `<i class="fa fa-inr" aria-hidden="true"></i>${data.total}`;
+          document.getElementById('tax').innerHTML = `<i class="fa fa-inr" aria-hidden="true"></i>${data.tax}`;
+          document.getElementById('delev').innerHTML = `<i class="fa fa-inr" aria-hidden="true"></i>${data.delev}`;
+          document.getElementById(catid).parentNode.parentNode.parentNode.removeChild(document.getElementById(catid).parentNode.parentNode);
+
+        }
+      })
+  });
+
+</script>
+<!-- Js For Increase Element -->
+
+<script type="text/javascript">
+  $('.plus_prod').click(function () {
+    var catid = $(this).attr("product_id").toString();
+    var eml = this.parentNode.children[1];
+    $.ajax(
+      {
+        type: "GET",
+        url: "/seller/plus_element_cart",
+        data: {
+          prod_id: catid
+        },
+        success: function (data) {
+          eml.innerText = data.num;
+          document.getElementById('subtotal').innerHTML = `<i class="fa fa-inr" aria-hidden="true"></i>${data.subtotal}`;
+          document.getElementById('total').innerHTML = `<i class="fa fa-inr" aria-hidden="true"></i>${data.total}`;
+          document.getElementById('tax').innerHTML = `<i class="fa fa-inr" aria-hidden="true"></i>${data.tax}`;
+          document.getElementById('delev').innerHTML = `<i class="fa fa-inr" aria-hidden="true"></i>${data.delev}`;
+        }
+      })
+  });
+</script>
+
+<!-- Js For Decrease Element -->
+
+<script type="text/javascript">
+  $('.minus_prod').click(function () {
+    var catid = $(this).attr("product_id").toString();
+    var eml = this.parentNode.children[1];
+    console.log(catid);
+    $.ajax(
+      {
+        type: "GET",
+        url: "/seller/minus_element_cart",
+        data: {
+          prod_id: catid
+        },
+        success: function (data) {
+          eml.innerText = data.num;
+          document.getElementById('subtotal').innerHTML = `<i class="fa fa-inr" aria-hidden="true"></i>${data.subtotal}`;
+          document.getElementById('total').innerHTML = `<i class="fa fa-inr" aria-hidden="true"></i>${data.total}`;
+          document.getElementById('tax').innerHTML = `<i class="fa fa-inr" aria-hidden="true"></i>${data.tax}`;
+          document.getElementById('delev').innerHTML = `<i class="fa fa-inr" aria-hidden="true"></i>${data.delev}`;
+        }
+      })
+  });
+</script>
+{% endblock saler_js %}

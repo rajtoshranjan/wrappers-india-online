@@ -1,0 +1,393 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block main_head %}
+<style type="text/css">
+	.prod1212 .thumb-wrapper {
+		padding: 25px 15px;
+		background: #fff;
+		border-radius: 6px;
+		text-align: center;
+		position: relative;
+		box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+	}
+
+	.prod1212 .img-box {
+		height: 120px;
+		margin-bottom: 10px;
+		width: 100%;
+		position: relative;
+	}
+
+	.prod1212 img {
+		max-width: 100%;
+		max-height: 100%;
+		display: inline-block;
+		position: absolute;
+		bottom: 0;
+		margin: 0 auto;
+		left: 0;
+		right: 0;
+	}
+
+	.prod1212 h4 {
+		font-size: 18px;
+	}
+
+	.prod1212 h4,
+	.carouselp,
+	.carouselul {
+		margin-bottom: 5px;
+	}
+
+	.prod1212 .thumb-content .btn {
+		color: #231f20;
+		border-radius: 0;
+		font-size: 11px;
+		text-transform: uppercase;
+		font-weight: bold;
+		background: none;
+		border: 1px solid #ccc;
+		padding: 5px 10px;
+		margin-top: 5px;
+		line-height: 16px;
+	}
+
+	.prod1212 .thumb-content .btn:hover,
+	.thumb-content .btn:focus {
+		color: #fff;
+		background: #be2714;
+		box-shadow: none;
+	}
+
+	.prod1212 .thumb-content .btn i {
+		font-size: 14px;
+		font-weight: bold;
+		margin-left: 5px;
+	}
+
+	h2 {
+		color: #000;
+		font-size: 26px;
+		font-weight: 300;
+		text-align: center;
+		text-transform: uppercase;
+		position: relative;
+	}
+
+	h2 b {
+		color: #be2714;
+	}
+
+	h2::after {
+		content: "";
+		width: 100px;
+		position: absolute;
+		margin: 0 auto;
+		height: 4px;
+		border-radius: 1px;
+		background: #be2714;
+		left: 0;
+		right: 0;
+		bottom: -5px;
+	}
+
+	.item-price {
+		font-size: 13px;
+		padding: 2px 0;
+	}
+
+	.prod1212 {
+		width: 190px;
+	}
+
+	@media(max-width: 700px) {
+		.prod1212 {
+			width: 185px;
+		}
+	}
+
+	@media(max-width: 399px) {
+		.prod1212 {
+			width: 175px;
+		}
+	}
+
+	@media(max-width: 359px) {
+		.prod1212 {
+			width: unset;
+		}
+	}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans">
+<link href="{% static 'main/css/home_style.css' %}" rel="stylesheet" type="text/css" media="all" />
+{% endblock main_head %}
+{% block main_body %}
+<div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel" style="margin: 0;padding: 0">
+	<ol class="carousel-indicators">
+		<li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
+		{% for slide in sliders|slice:"1:" %}
+		<li data-target="#carouselExampleCaptions" data-slide-to="{{forloop.counter}}"></li>
+		{% endfor %}
+	</ol>
+	<div class="carousel-inner">
+		<div class="carousel-item active">
+			<img src="{{sliders.0.image.url}}" alt="{{sliders.0.name}}" style="width: 100%">
+
+		</div>
+		{% for slide in sliders|slice:"1:" %}
+		<div class="carousel-item">
+			<img src="{{slide.image.url}}" alt="{{slide.name}}" style="width: 100%">
+
+		</div>
+		{% endfor %}
+	</div>
+	<a class="carousel-control-prev" href="#carouselExampleCaptions" role="button" data-slide="prev">
+		<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+		<span class="sr-only">Previous</span>
+	</a>
+	<a class="carousel-control-next" href="#carouselExampleCaptions" role="button" data-slide="next">
+		<span class="carousel-control-next-icon" aria-hidden="true"></span>
+		<span class="sr-only">Next</span>
+	</a>
+</div>
+<div id="container_main">
+	<div class="container">
+				<!-- Treand -->
+		<div class="row">
+			<div class="col-md-12">
+				<h2>Trending <b>Products</b></h2>
+				<div style="text-align: center;">
+				<a href="/products/trend" class="btn"
+					style="color: #be2714; font-size: 14px; padding-top: 0;  margin-top: -20px;">
+					<i class="fa fa-eye" aria-hidden="true" style=""></i> View All
+				</a></div>
+				<div id="trendCarousel" class="carousel carousel1 slide" data-ride="carousel" data-interval="0">
+					<!-- Carousel indicators -->
+					<ol class="carousel-indicators">
+						<li data-target="#trendCarousel" data-slide-to="0" class="active"></li>
+						<li data-target="#trendCarousel" data-slide-to="1"></li>
+						<li data-target="#trendCarousel" data-slide-to="2"></li>
+						<li data-target="#trendCarousel" data-slide-to="3"></li>
+						<li data-target="#trendCarousel" data-slide-to="4"></li>
+					</ol>
+					<!-- Wrapper for carousel items -->
+					<div class="carousel-inner">
+						<div class="item carousel-item active">
+							<div class="row">
+								{% for i in trend %}
+								<div class="col-sm-2 p-0 pr-2">
+									<div class="thumb-wrapper">
+										<div class="img-box">
+											<img src="{{i.product.image1.url}}" class="img-responsive img-fluid" alt="">
+										</div>
+										<div class="thumb-content">
+											<h4><a href="product/{{i.product_id}}" style="text-decoration: none; color: #231f20">
+													{{i.product.product_name}}</a></h4>
+											<p class="item-price"><strike><i class="fa fa-inr"
+														aria-hidden="true"></i>{{i.product.price_not}}</strike> <span><i
+														class="fa fa-inr" aria-hidden="true"></i>{{i.product.price}}</span></p>
+
+										</div>
+									</div>
+								</div>
+								{% if forloop.counter|divisibleby:6 and forloop.counter > 0 and not forloop.last %}
+							</div>
+						</div>
+						<div class="item carousel-item">
+							<div class="row">
+								{% endif %}
+
+								{% endfor %}
+							</div>
+						</div>
+					</div>
+					<!-- Carousel controls -->
+					<a class="carousel-control left carousel-control-prev" href="#trendCarousel" data-slide="prev">
+						<i class="fa fa-angle-left"></i>
+					</a>
+					<a class="carousel-control right carousel-control-next" href="#trendCarousel" data-slide="next">
+						<i class="fa fa-angle-right"></i>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="container-fluid">
+		{% for product, range, nSlides in allProds %}
+		<h2>Flash Sale On <b>{{product.0.0.category}}</b></h2>
+		<div id="demo{{forloop.counter}}" class="carousel carousel1 slide" data-ride="carousel" data-interval="0">
+			<div style="text-align: center;">
+				<a href="/products/{{product.0.0.category}}" class="btn"
+					style="color: #be2714; font-size: 14px; padding-top: 0;  margin-top: -20px;">
+					<i class="fa fa-eye" aria-hidden="true" style=""></i> View All
+				</a></div>
+			<ol class="carousel-indicators">
+				<li data-target="#demo{{forloop.counter}}" data-slide-to="0" class="active"></li>
+
+				{% for i in range %}
+				<li data-target="#demo{{forloop.parentloop.counter}}" data-slide-to="{{i}}"></li>
+				{% endfor %}
+			</ol>
+
+
+			<div class="carousel-inner">
+
+				<div class="item carousel-item active">
+
+					<div class="row">
+						{% for i in product %}
+
+						<div class="col-sm-2 p-0 pr-2">
+							<div class="thumb-wrapper">
+								<div class="img-box">
+									<img src="{{i.0.image1.url}}" class="img-responsive img-fluid" alt="">
+								</div>
+								<div class="thumb-content">
+									<h4><a href="product/{{i.0.product_id}}" style="text-decoration: none; color: #231f20">
+											{{i.0.product_name}}</a>
+									</h4>
+									<p class="item-price"><strike><i class="fa fa-inr"
+														aria-hidden="true"></i>{{i.0.price_not}}</strike> <span><i class="fa fa-inr"
+												aria-hidden="true"></i>{{i.0.price}}</span></p>
+
+									<div>
+										<a p_id="{{i.0.product_id}}" class="btn btn-primary oprbtn" id="ord{{i.0.product_id}}">Order Now</a>
+										<div id="ord{{i.0.product_id}}sizesof" style="display: none;">
+													{% for me in i.1 %}
+													<form method="GET" style="display: inline;" action="/order_now">
+														<input type="text" name="prod_id" value="{{i.0.product_id}}" style="display: none;">
+														<input type="size" name="prod_size" value="{{me.size}}" style="display: none;">
+														<button type="submit" class="btn pt-1 pb-1 pr-2 pl-2">{{me.size}}</button>
+													</form>	
+													{% endfor %}
+												</div>
+												<a p_id="{{i.0.product_id}}" class="btn btn-primary oprbtn"  style="padding: 5px 10px 5px 5px;" id="atc{{i.0.product_id}}"><i class="fa fa-cart-plus" aria-hidden="true"></i></a>
+												<div id="atc{{i.0.product_id}}sizesof" style="display: none;">
+													{% for me in i.1 %}
+													<a prod_id="{{i.0.product_id}}" class="btn pt-1 pb-1 pr-2 pl-2 add_to_cart">{{me.size}}</a>
+													{% endfor %}
+												</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						{% if forloop.counter|divisibleby:6 and forloop.counter > 0 and not forloop.last %}
+					</div>
+				</div>
+				<div class="item carousel-item">
+					<div class="row">
+						{% endif %}
+
+						{% endfor %}
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- left and right controls for the slide -->
+			<a class="carousel-control left carousel-control-prev" href="#demo{{forloop.counter}}" data-slide="prev">
+				<i class="fa fa-angle-left"></i>
+			</a>
+			<a class="carousel-control right carousel-control-next" href="#demo{{forloop.counter}}" data-slide="next">
+				<i class="fa fa-angle-right"></i>
+			</a>
+		</div>
+		{% endfor %}
+
+	</div>
+</div>
+{% endblock main_body %}
+
+{% block main_script %}
+<script type="text/javascript">
+	if (document.body.offsetWidth < 1024) {
+		document.body.style.backgroundColor = "#e2eaef";
+		document.getElementById('container_main').innerHTML = `			<div class="container-fluid">
+			
+		<!-- Trending -->
+			<h2>Trending <b>Products</b></h2>
+			<div style="text-align: center;">
+			<a href="/products/trend" class="btn" style="color: #be2714; font-size: 14px; padding-top: 0;  margin-top: -20px;">
+				<i class="fa fa-eye" aria-hidden="true" style=""></i> View All
+			</a></div>
+		<div class="row pt-1" style="justify-content: center;">
+			{% for i in trend|slice:":4" %}
+			<div class="p-1 prod1212">
+				<a href="{% url 'home' %}product/{{i.product_id}}" style="text-decoration: none; color: #231f20">
+				<div class="thumb-wrapper">
+					<div class="img-box">
+						<img src="{{i.product.image1.url}}" class="img-responsive img-fluid" alt="">
+					</div>
+					<div class="thumb-content">
+						<small>{{i.product.product_name}}</small>
+						<p class="item-price"><strike><i class="fa fa-inr"
+														aria-hidden="true"></i>{{i.product.price_not}}</strike> <span><i
+														class="fa fa-inr" aria-hidden="true"></i>{{i.product.price}}</span></p>
+
+					
+					</div>
+				</div>
+				</a>
+			</div>
+			{% endfor %}
+		</div>
+		<hr>
+		{% for product, range, nSlides in allProds %}
+	<h2>Flash Sale On <b>{{product.0.0.category}}</b></h2>
+		<div style="text-align: center;">
+			<a href="/products/{{product.0.0.category}}" class="btn" style="color: #be2714; font-size: 14px; padding-top: 0;  margin-top: -20px;">
+				<i class="fa fa-eye" aria-hidden="true" style=""></i> View All
+			</a></div>
+			<div class="row" style="justify-content: center;">
+			{% for i in product|slice:":4" %}
+			<div class="p-1 prod1212">
+						<div class="thumb-wrapper">
+							<div class="img-box">
+								<img src="{{i.0.image1.url}}" class="img-responsive img-fluid" alt="">
+							</div>
+							<div class="thumb-content">
+								<small><a href="product/{{i.0.product_id}}" style="text-decoration: none; color: #231f20"> {{i.0.product_name}}</a>
+								</small>
+								<p class="item-price"><strike><i class="fa fa-inr"
+														aria-hidden="true"></i>{{i.0.price_not}}</strike> <span><i class="fa fa-inr"
+												aria-hidden="true"></i>{{i.price}}</span></p>
+
+								<div>
+										<a p_id="{{i.0.product_id}}" class="btn btn-primary oprbtn" id="ord{{i.0.product_id}}">Order Now</a>
+										<div id="ord{{i.0.product_id}}sizesof" style="display: none;">
+													{% for me in i.1 %}
+													<form method="GET" style="display: inline;" action="/order_now">
+														<input type="text" name="prod_id" value="{{i.0.product_id}}" style="display: none;">
+														<input type="size" name="prod_size" value="{{me.size}}" style="display: none;">
+														<button type="submit" class="btn pt-1 pb-1 pr-2 pl-2">{{me.size}}</button>
+													</form>		
+													{% endfor %}
+												</div>
+												<a p_id="{{i.0.product_id}}" class="btn btn-primary oprbtn"  style="padding: 5px 10px 5px 5px;" id="atc{{i.0.product_id}}"><i class="fa fa-cart-plus" aria-hidden="true"></i></a>
+												<div id="atc{{i.0.product_id}}sizesof" style="display: none;">
+													{% for me in i.1 %}
+													<a prod_id="{{i.0.product_id}}" class="btn pt-1 pb-1 pr-2 pl-2 add_to_cart">{{me.size}}</a>
+													{% endfor %}
+												</div>
+									</div>
+							</div>
+						</div>
+					</div>
+			{% endfor %}
+		</div>
+
+		<hr>
+	{% endfor %}
+</div>`;
+	}
+</script>
+<script type="text/javascript">
+		$('.oprbtn').click(function () {
+			var p_id = $(this).attr("p_id");
+			document.getElementById('ord'+p_id).style.display = 'none';
+			document.getElementById('atc'+p_id).style.display = 'none';
+			document.getElementById(this.id+'sizesof').style.display = 'block';
+		});
+	</script>
+{% endblock main_script %}

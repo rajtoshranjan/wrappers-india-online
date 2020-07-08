@@ -1,0 +1,149 @@
+
+@font-face {
+    font-family: 'economicaregular';
+    src: url('economica-regular-otf-webfont.woff2') format('woff2'),
+         url('economica-regular-otf-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+@font-face {
+    font-family: 'stormextrabold';
+    src: url('storeb__-webfont.woff2') format('woff2'),
+         url('storeb__-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+.side_nav{
+	transition: all 300ms linear;
+	width: 40px;
+	height: 100%;
+	position: fixed;
+	left: 0;
+	text-align: center;
+	background-color: #231f20;
+	z-index: 99;
+}
+
+.side_nav a{
+	font-size: 30px;
+	color: #fff;
+}
+.side_nav a:hover{
+	color: #be2714;
+}
+.a{
+	color: #fff;
+}
+.a:hover{
+	color: #be2714;
+}
+.logo{
+    font-size: 28px;
+    font-family: stormextrabold;
+    color: #231f20;
+}
+nav {
+	width:200px;
+	height: 100%;
+	position: fixed;
+	left: 40px;
+	background-color: #be2714;
+	transition: ;
+	animation-name: nav_animation;
+	animation-duration: .3s;
+	font-family: "Comic Sans MS", cursive, sans-serif;
+	text-align: center;
+}
+nav ul{
+	padding: 0;
+}
+nav ul li{
+	list-style: none;
+	padding: 3px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-bottom: solid 1px #231f206b;
+}
+nav ul li a{
+	color: #231f20;
+	font-size: 20px;
+}
+
+nav a:hover{
+	color: #231f20;
+	font-weight: bold;
+	text-decoration-line: none;
+}
+
+@keyframes nav_animation{
+	from{
+		width: 0;
+	}
+	to{
+		width: 200px;
+	}
+}
+
+.usr_detail{
+	width: 200px;
+	height: 300px;
+	border-top-right-radius: 150px;
+	border-bottom-right-radius: 150px;
+	position: absolute;
+	left: 40px;
+	background-color: #be2714;
+}
+.wallet{
+	transition: all 300ms linear;
+	position: fixed;
+	height: 50px;
+	background-color: #231f20;
+	bottom: 0;
+	left: -400px;
+	font-family: economicaregular;
+	padding:0;
+	display:flex;  
+  	list-style:none;
+  	margin: 0;
+}
+
+
+.wallet li{
+	width: 80px;
+	height: 50px;
+	border-left: solid #be2714;
+	
+}
+
+.wallet li a{
+	color: #fff;
+	font-size: 20px;
+	font-family: economicaregular;
+}
+
+.wallet li a{
+	text-decoration:none;
+}
+
+#main{
+	transition: all 300ms linear;
+	margin-left: 40px;
+}
+
+@media(min-width:420px){
+    div::-webkit-scrollbar {
+        width: 7px;
+    }
+     
+    div::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    }
+     
+    div::-webkit-scrollbar-thumb {
+      background-color: darkgrey;
+      outline: 1px solid slategrey;
+    }
+}

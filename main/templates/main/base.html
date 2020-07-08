@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Wrappers</title>
+	{% load static %}
+	{% load app_tags %}
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta content="width=device-width, initial-scale=1.0" name="viewport">
+	<meta content="" name="keywords">
+	<meta content="" name="description">
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<link href="{% static 'main/images/favicon.png' %}" rel="icon">
+	<script type="application/x-javascript">
+		addEventListener("load", function() {
+			setTimeout(hideURLbar, 0);
+		}, false);
+		function hideURLbar(){
+			window.scrollTo(0,1);
+			 }
+			 function update_cart() {
+			 	if (localStorage.getItem('add_to_cart') == null) {
+					var add_to_cart = {};
+				}
+				else {
+					add_to_cart = JSON.parse(localStorage.getItem('add_to_cart'));
+					document.getElementById('cart_no').innerHTML = Object.keys(add_to_cart).length;
+
+				}
+			 	var prod_list_local = [];
+					if (localStorage.getItem('add_to_cart') != null) {
+						for (var prd_item in add_to_cart) {
+							prod_list_local.push(prd_item + "|" + add_to_cart[prd_item]);
+						}
+					}
+					$.ajax(
+						{
+							type: "GET",
+							url: "/dummy_cart",
+							data: {
+								prod_list: prod_list_local.toString()
+							},
+							success: function (data) {
+								console.log(data);
+							}
+						});
+					//{% if request.user.is_authenticated %}
+					localStorage.clear();
+				    //{% endif %}
+						 }
+		 </script>
+	<!--//tags -->
+	<link href="{% static 'main/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" media="all" />
+	<link href="{% static 'main/css/style.css' %}" rel="stylesheet" type="text/css" media="all" />
+	<link href="{% static 'saler/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+	{% block main_head %}
+	{% endblock main_head %}
+</head>
+
+<body>
+	<nav class="main_nav" id="main_nav">
+		<div class="container">
+			<div class="nav_links">
+				<a href="{% url 'home' %}" class="logo">Wrappers</i></a>
+				<form class="form-inline my-2 my-lg-0 serch" action="/search">
+					<input class="form-control mr-sm-2" type="search" placeholder="Search for Anything You Want"
+						aria-label="Search" name="query">
+					<button class="btn" type="submit" style="margin: 0;"><i class="fa fa-search"
+							aria-hidden="true"></i></button>
+				</form>
+			</div>
+			<div class="user_links pt-1">
+				<a href="{% url 'main_cart' %}" style="font-size: 22px; color: #fff; margin-right: 20px;"><i
+						class="fa fa-shopping-cart" aria-hidden="true"></i><sup><span class="badge"
+							id="cart_no">{{cart_element_no}}</span></sup></a>
+				{% if request.user.is_authenticated %}
+				<a href="##" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="focus"
+					data-html="true"
+					data-content="<a href='{% url 'myorders' %}'>My Order</a><br><a href='{% url 'account_settings' %}'>Account Settings</a>"><img
+						src="{{request.user.userdetail.photo.url}}"
+						style="height: 20px; width: 20px; border-radius: 10px; margin-right: 3px;">{{request.user.first_name}}</a>&nbsp;|
+				<a href="{% url 'logout' %}">Logout</a>
+				{% else %}
+				<a href="{% url 'login' %}">Login</a>&nbsp;|
+				<a href="{% url 'signup' %}">Register</a>&nbsp;|
+				<a href="{% url 'seller_signup' %}">Seller</a>
+				{% endif %}
+			</div>
+		</div>
+	</nav>
+	<header id="navheader">
+		<div style="overflow-y: scroll; height: 90%;">
+			<ul>
+				{% for cat in category %}
+				<li>
+					<a href="#list{{forloop.counter}}" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">{{cat.name}}</a>
+					<ul class="collapse list-unstyled" id="list{{forloop.counter}}">
+						{% for item in cat.sub_Categories|split:","  %}
+						<li>
+							<a href="/MenuFilter/{{cat}},{{item}}">{{item}}</a>
+						</li>
+						{% endfor %}
+					</ul>
+				</li>
+				{% endfor %}
+			</ul>
+		</div>
+		<section class="social_media">
+			<a href="#"><i class="fa fa-facebook-square" aria-hidden="true"></i></a>
+			<a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+			<a href="#"><i class="fa fa-twitter-square" aria-hidden="true"></i></a>
+			<a href="#"><i class="fa fa-linkedin-square" aria-hidden="true"></i></a>
+			<a href="#"><i class="fa fa-youtube-play" aria-hidden="true"></i></a> |
+			&copy; 2019-20
+		</section>
+	</header>
+	<a class="menu_bar"><i class="fa fa-bars" aria-hidden="true"></i></a>
+	<main class="" id="menu_close">
+		{% block main_body %}
+		{% endblock main_body %}
+	</main>
+	{% block main_script %}
+	{% endblock main_script %}
+	<script type="text/javascript">
+		if (document.body.offsetWidth <= 1024) {
+
+			document.getElementById('main_nav').innerHTML = `<div class="nav_links" id="nav_links1">
+				<a href="{% url 'home' %}" class="logo">Wrappers</i></a>
+				<div style="float:right;" class="pr-1 pt-1">
+					{% if request.user.is_authenticated %}
+					<a href="##" data-container="body" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-html="true" data-content="<a href='{% url 'myorders' %}'>My Order</a><br><a href='{% url 'account_settings' %}'>Account Settings</a>"><img src="{{request.user.userdetail.photo.url}}"
+							style="height: 20px; width: 20px; border-radius: 10px; margin-right: 3px;">{{request.user.first_name|slice:"0:10"}}</a>&nbsp;|
+					<a href="{% url 'logout' %}">Logout</a>
+					{% else %}
+					<a href="{% url 'login' %}">Login</a>&nbsp;|
+					<a href="{% url 'seller_signup' %}">Seller</a>
+					{% endif %}
+				</div>
+			</div>
+			<div class="user_links">
+				<form class="form-inline serch" action="/search" id="s_form">
+					<input class="form-control" type="search" placeholder="Search for Anything You Want"
+						aria-label="Search" name="query">
+					<button class="btn" type="submit" style="margin: 0;"><i class="fa fa-search" aria-hidden="true"></i></button>
+				</form>
+				<a href="{% url 'main_cart' %}" style="font-size: 25px; color: #fff; float:right;" class="pt-1"><i class="fa fa-shopping-cart" aria-hidden="true"></i><sup><span class="badge p-0 m-0" id="cart_no">{{cart_element_no}}</span></sup></a>
+
+			</div>`;
+			window.onscroll = function() {
+			  var currentScrollPos = window.pageYOffset;
+			  if (currentScrollPos >= 100) {
+			    document.getElementById("nav_links1").style.display = "none";
+			    document.getElementById("s_form").style.marginLeft = "20px";
+			    document.getElementById('main_nav').style.height = "42px";
+			  } else {
+			    document.getElementById("nav_links1").style.display = "block";
+			    document.getElementById("s_form").style.marginLeft = "unset";
+			    document.getElementById('main_nav').style.height = "90px";
+
+			  }
+
+			}
+		}
+	</script>
+
+	<!-- Add to cart -->
+	<script type="text/javascript">
+		if (localStorage.getItem('add_to_cart') == null) {
+			var add_to_cart = {};
+		}
+		else {
+			add_to_cart = JSON.parse(localStorage.getItem('add_to_cart'));
+		}
+	</script>
+	{% if not user.is_authenticated %}
+	<script type="text/javascript">
+		if (localStorage.getItem('add_to_cart') == null) {
+			var add_to_cart = {};
+		}
+		else {
+			add_to_cart = JSON.parse(localStorage.getItem('add_to_cart'));
+			document.getElementById('cart_no').innerHTML = Object.keys(add_to_cart).length;
+
+		}
+		$('.add_to_cart').click(function () {
+			var idstr = $(this).attr("prod_id");
+			console.log(idstr);
+			if (add_to_cart[idstr] != undefined) {
+				add_to_cart[idstr] = add_to_cart[idstr] + 1;
+			}
+			else {
+				add_to_cart[idstr] = 1;
+			}
+			localStorage.setItem('add_to_cart', JSON.stringify(add_to_cart));
+			document.getElementById('cart_no').innerHTML = Object.keys(add_to_cart).length;
+			update_cart();
+		});
+	</script>
+	{% endif %}
+
+	{% if request.user.is_authenticated %}
+	<script type="text/javascript">
+		$('.add_to_cart').click(function () {
+			var id = $(this).attr("prod_id");
+			var siz= this.innerText;
+			var catid = ''+id+','+siz;
+			$.ajax(
+				{
+					type: "GET",
+					url: "/add_to_cart",
+					data: {
+						prod_id: catid
+					},
+					success: function (data) {
+						$('#cart_no').text(data);
+					}
+				})
+		});
+	</script>
+	{% endif %}
+	<!-- js for sending local data -->
+	<script type="text/javascript">
+		var prod_list_local = [];
+		if (localStorage.getItem('add_to_cart') != null) {
+			for (var prd_item in add_to_cart) {
+				prod_list_local.push(prd_item + "|" + add_to_cart[prd_item]);
+			}
+		}
+		$.ajax(
+			{
+				type: "GET",
+				url: "/dummy_cart",
+				data: {
+					prod_list: prod_list_local.toString()
+				},
+				success: function (data) {
+					console.log(data);
+				}
+			});
+		//{% if request.user.is_authenticated %}
+		localStorage.clear();
+	    //{% endif %}
+	</script>
+
+
+	<script>
+		$(document).ready(function () {
+			$('[data-toggle="popover"]').popover();
+		});
+	</script>
+	<script type="text/javascript" src="{% static 'main/js/main.js' %}"></script>
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script type="text/javascript" src="{% static 'main/js/bootstrap.min.js' %}"></script>
+</body>
+
+</html>

@@ -1,0 +1,158 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block main_head %}
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans">
+<style type="text/css">
+.prod1212 .thumb-wrapper {
+	padding: 25px 15px;
+	background: #fff;
+	border-radius: 6px;
+	text-align: center;
+	position: relative;
+	box-shadow: 0 2px 3px rgba(0,0,0,0.2);
+}
+.prod1212 .img-box {
+	height: 120px;
+	margin-bottom: 10px;
+	width: 100%;
+	position: relative;
+}
+.prod1212 img {	
+	max-width: 100%;
+	max-height: 100%;
+	display: inline-block;
+	position: absolute;
+	bottom: 0;
+	margin: 0 auto;
+	left: 0;
+	right: 0;
+}
+.prod1212 h4 {
+	font-size: 18px;
+}
+.prod1212 h4, .carouselp, .carouselul {
+	margin-bottom: 5px;
+}
+.prod1212 .thumb-content .btn {
+	color: #231f20;
+		border-radius: 0;
+		font-size: 11px;
+		text-transform: uppercase;
+		font-weight: bold;
+		background: none;
+		border: 1px solid #ccc;
+		padding: 5px 10px;
+		line-height: 16px;
+}
+.prod1212 .thumb-content .btn:hover, .thumb-content .btn:focus {
+	color: #fff;
+	background: #231f20;
+	box-shadow: none;
+}
+.prod1212 .thumb-content .btn i {
+	font-size: 14px;
+    font-weight: bold;
+    margin-left: 5px;
+}
+h2 {
+	color: #000;
+	font-size: 26px;
+	font-weight: 300;
+	text-align: center;
+	text-transform: uppercase;
+	position: relative;
+}
+h2 b {
+	color: #be2714;
+}
+h2::after {
+	content: "";
+	width: 100px;
+	position: absolute;
+	margin: 0 auto;
+	height: 4px;
+	border-radius: 1px;
+	background: #be2714;
+	left: 0;
+	right: 0;
+	bottom: -5px;
+}
+ .item-price {
+	font-size: 13px;
+	padding: 2px 0;
+}
+.prod1212{
+	width: 190px;
+}
+@media(max-width: 700px){
+	.prod1212{
+		width: 185px;
+	}
+}
+@media(max-width: 399px){
+	.prod1212{
+		width: 175px;
+	}
+}
+@media(max-width: 359px){
+	.prod1212{
+		width: unset;
+	}
+}
+</style>
+{% endblock main_head %}
+{% block main_body %}
+<div class="container-fluid" style="background-color: #e2eaef;">
+		<h2>All <b>{{catg}}</b> Products</h2>
+		<div class="row pt-1" style="justify-content: center;">
+			{% for i in product reversed %}
+			<div class="p-1 prod1212">
+				<a href="{% url 'home' %}product/{{i.0.product_id}}" style="text-decoration: none; color: #231f20">
+				<div class="thumb-wrapper">
+					<div class="img-box">
+						<img src="{{i.0.image1.url}}" class="img-responsive img-fluid" alt="">
+					</div>
+					<div class="thumb-content">
+						<small>{{i.0.product_name}}</small>
+						<p class="item-price"><strike><i class="fa fa-inr"
+														aria-hidden="true"></i>{{i.0.price_not}}</strike> <span><i class="fa fa-inr"
+												aria-hidden="true"></i>{{i.0.price}}</span></p>
+
+						<div>
+							<a p_id="{{i.0.product_id}}" class="btn btn-primary oprbtn" id="ord{{i.0.product_id}}">Order Now</a>
+							<div id="ord{{i.0.product_id}}sizesof" style="display: none;">
+								{% for me in i.1 %}
+								<form method="GET" style="display: inline;" action="/order_now">
+														<input type="text" name="prod_id" value="{{i.0.product_id}}" style="display: none;">
+														<input type="size" name="prod_size" value="{{me.size}}" style="display: none;">
+														<button type="submit" class="btn pt-1 pb-1 pr-2 pl-2">{{me.size}}</button>
+													</form>	
+								{% endfor %}
+							</div>
+							<a p_id="{{i.0.product_id}}" class="btn btn-primary oprbtn"  style="padding: 5px 10px 5px 5px;" id="atc{{i.0.product_id}}"><i class="fa fa-cart-plus" aria-hidden="true"></i></a>
+							<div id="atc{{i.0.product_id}}sizesof" style="display: none;">
+								{% for me in i.1 %}
+								<a prod_id="{{i.0.product_id}}" class="btn pt-1 pb-1 pr-2 pl-2 add_to_cart">{{me.size}}</a>
+								{% endfor %}
+							</div>
+						</div>
+					</div>
+				</div>
+				</a>
+			</div>
+			{% endfor %}
+		</div>
+</div>
+<script type="text/javascript">
+		$('.oprbtn').click(function () {
+			var p_id = $(this).attr("p_id");
+			document.getElementById('ord'+p_id).style.display = 'none';
+			document.getElementById('atc'+p_id).style.display = 'none';
+			document.getElementById(this.id+'sizesof').style.display = 'block';
+		});
+	</script>
+{% endblock main_body %}

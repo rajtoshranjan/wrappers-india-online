@@ -1,0 +1,22 @@
+{% extends 'main/account_base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block body_account %}
+<form method="POST" class="signup_form mr-2 ml-2">
+	{% csrf_token %}
+	<fieldset>
+		{{form|crispy}}
+	</fieldset>
+	<section class="mt-4 mr-1 ml-1">
+		<button type="submit">Log In</button>
+		<small>Don't have an account? &nbsp;<a href="{% url 'signup' %}">Sign Up</a></small>
+		<small>Forgotten <a href="{% url 'password_reset' %}">Password</a></small>
+
+	</section>
+	<div class="subtitle pt-2 mt-1"></div>
+</form>
+<script type="text/javascript">
+	document.getElementsByTagName('label')[0].innerText = 'Email/Mobile No.';
+</script>
+{% endblock body_account %}

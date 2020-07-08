@@ -1,0 +1,186 @@
+{% extends 'saler/base.html' %}
+{% block saler_head %}
+{% endblock saler_head %}
+{% load crispy_forms_tags %}
+{% block saler_body %}
+<div class="container">
+	{% if messages %}
+	{% for message in messages %}
+	<div class="alert alert-{{message.tags}}">{{ message }}</div>
+	{% endfor %}
+	{% endif %}
+	<h1 style="text-align: center; letter-spacing: 1px; font-family: Sans-Serif Fonts; font-weight: bolder;">Add Product
+	</h1>
+	<form method="post" enctype="multipart/form-data">{% csrf_token %}
+		<div class="row">
+			<div class="col-md">
+			  <div class="form-group">
+			    <label for="ProductName">Product Name</label>
+			    <input type="text" class="form-control" id="ProductName" name="prod_name" placeholder="Enter Product Name" required>
+			  </div>
+			</div>
+			
+			<div class="col-md-2">
+			    <label for="ProductName">Category</label>
+				<select class="custom-select" name="category" id="id_category">
+				  <option selected>-----</option>
+				  {% for sc in subcat %}
+				  <option value="{{sc.0.id}}">{{sc.0}}</option>
+				  {% endfor %}
+				</select>
+			</div>
+			<div class="col-md-2">
+				<label for="ProductName">SubCategory</label>
+				<select class="custom-select" name="subcategory" id="id_subcategory" >
+					<option selected>-----</option>
+				</select>
+			</div>
+			<div class="col-md-2">
+				<label for="ProductName">Price</label>
+				<div class="input-group mb-3">
+				  <div class="input-group-prepend">
+				    <span class="input-group-text"><i class="fa fa-inr" aria-hidden="true"></i></span>
+				  </div>
+				  <input type="number" class="form-control" aria-label="Amount (to the nearest dollar)" name="price" required>
+				  
+				</div>
+			</div>
+			<div class="col-md-2">
+				<label for="ProductName">Price Not</label>
+				<div class="input-group mb-3">
+				  <div class="input-group-prepend">
+				    <span class="input-group-text"><i class="fa fa-inr" aria-hidden="true"></i></span>
+				  </div>
+				  <input type="number" class="form-control" aria-label="Amount (to the nearest dollar)" name="price_not" required>
+				  
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-10">
+				<div class="input-group">
+				  <div class="input-group-prepend">
+				    <span class="input-group-text">Description</span>
+				  </div>
+				  <textarea class="form-control" rows="1" aria-label="With textarea" name="desc"></textarea>
+				</div>
+			</div>
+			<div class="col-md-2">
+				<div class="input-group mb-3">
+				  <div class="input-group-prepend">
+				    <label class="input-group-text" for="inputGroupSelect01">GST</label>
+				  </div>
+				<select class="custom-select" id="inputGroupSelect01" name="gst" id="inputGroupSelect01">
+				  <option value="0" selected>0%</option>
+				  <option value="3">3%</option>
+				  <option value="5">5%</option>
+				  <option value="12">12%</option>
+				  <option value="18">18%</option>
+				  <option value="28">28%</option>
+				</select>
+			</div>
+		</div>
+		</div>
+		<label for="ProductName">Images</label>
+		<div class="row">
+			<div class="col-md">
+				<input type="file" name="image1" accept="image/*" class="clearablefileinput form-control" required>
+			</div>
+			<div class="col-md">
+				<input type="file" name="image2" accept="image/*" class="clearablefileinput form-control">
+			</div>
+			<div class="col-md">
+				<input type="file" name="image3" accept="image/*" class="clearablefileinput form-control">
+			</div>
+			<div class="col-md">
+				<input type="file" name="image4" accept="image/*" class="clearablefileinput form-control">
+			</div>
+			<div class="col-md">
+				<input type="file" name="image5" accept="image/*" class="clearablefileinput form-control">
+			</div>
+		</div>
+		<label>Enter Size and Quantity</label>
+		<div class="row pb-1" id="sizes">
+			<div class="col-sm-2">
+				<div class="input-group">
+				  <input type="text" aria-label="Size" class="form-control" placeholder="Size" name="size1" required>
+				  <input type="number" aria-label="Quantity" class="form-control" placeholder="Quantity" name="quantity1" required>
+				</div>
+			</div>
+			<input type="number" name="size_no" style="display: none;" id="size_no" value="1">
+			<i class="fa fa-plus-circle pt-1" aria-hidden="true" style="font-size: 30px;" onclick="addsizequn()"id='pls'></i>
+		</div>
+		<button type="submit" class="btn btn-primary"
+			style="background-color: #be2714; border: none; width: 100%;">Add</button>
+	</form>
+</div>
+<hr class="mr-5 ml-5 pb-2">
+<div class="container">
+	<h5 style="text-align: center; font-weight: bold;">Products in Your Store! <a href="{% url 'view_products' %}"
+			style="font-size: 15px;"><i class="fa fa-eye" aria-hidden="true"></i>View All</a></h5>
+	<div style="max-height: 420px; overflow-y: scroll;">
+		<table class="table">
+			<thead class="thead-dark">
+				<tr>
+					<th scope="col">Product Id</th>
+					<th scope="col">Product Name</th>
+					<th scope="col">category</th>
+					<th scope="col">SubCategory</th>
+					<th scope="col">price</th>
+					<th scope="col" style="text-align: right;"><i class="fa fa-trash" aria-hidden="true"></i></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for pr in prod %}
+				<tr>
+					<th scope="row">{{pr.product_id}}</th>
+					<td>{{pr.product_name}}</td>
+					<td>{{pr.category}}</td>
+					<td>{{pr.subcategory}}</td>
+					<td>{{pr.price}}</td>
+					<form>
+						<input type="text" name="pro_id" value="{{pr.product_id}}" readonly style="display: none;">
+						<td style="text-align: right;"><button type="submit" class="btn" style="margin: 0;padding: 0"><i
+									class="fa fa-trash" aria-hidden="true"></i></button></td>
+
+					</form>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+<script>
+	var sq = 1;
+	function addsizequn(){
+		let elm = document.createElement('div');
+		document.getElementById('pls').remove();
+		sq++;
+		elm.className = 'col-sm-2';
+		elm.innerHTML = `<div class="input-group">
+					  <input type="text" aria-label="Size" class="form-control" placeholder="Size" name="size${sq}">
+					  <input type="number" aria-label="Quantity" class="form-control" placeholder="Quantity" name="quantity${sq}">
+					</div>
+					<i class="fa fa-plus-circle pt-1" aria-hidden="true" style="font-size: 30px;" onclick="addsizequn()" id='pls'></i>`;
+		sub = document.getElementById('sizes');
+		sub.appendChild(elm);
+		document.getElementById('size_no').value = sq;
+	}
+</script>
+<script type="text/javascript">
+	function subcat() {
+		{% for sc in subcat %}
+		if (document.getElementById('id_category').value == {{sc.0.id}}) {
+		$("#id_subcategory")
+	    .replaceWith('<select id="id_subcategory" name="subcategory" class="select form-control">' +
+	    	 {% for op in sc|slice:"1:" %}
+	          '<option value="{{op}}">{{op}}</option>' +
+	         {% endfor %}
+	        '</select>');
+		}
+	    {% endfor %}
+	}
+	subcat();
+	document.getElementById('id_category').onchange = subcat;
+</script>
+{% endblock saler_body %}

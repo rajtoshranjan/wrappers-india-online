@@ -1,0 +1,163 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head style="font-family: economicaregular;">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta content="width=device-width, initial-scale=1.0" name="viewport">
+	<meta content="" name="keywords">
+	<meta content="" name="description">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<link href="{% static 'main/images/favicon.png' %}" rel="icon">
+	<link href="{% static 'main/css/bootstrap.min.css' %}" rel="stylesheet">
+	<link href="{% static 'saler/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+	<link href="{% static 'saler/css/style.css' %}" rel="stylesheet">
+	<title>Wrappers India Online</title>
+
+	{% block saler_head %}
+	{% endblock saler_head %}
+</head>
+
+<body style="background: #e2eaef; font-family: 'Open Sans', sans-serif;">
+	<div class="side_nav" id="nav" style="z-index: 99;">
+		<a onclick="menuDisp()" onmouseenter="document.getElementById('wallet').style.left = '-400px';"
+			data-toggle="tooltip" data-placement="top" title="Menu"><i class="fa fa-bars a" aria-hidden="true"></i>
+		</a>
+		<a onmouseenter="document.getElementById('wallet').style.left = '-400px';" href="{% url 'saler_home' %}"
+			data-toggle="tooltip" data-placement="top" title="Home"><i class="fa fa-home" aria-hidden="true"></i>
+		</a>
+		<a onmouseenter="document.getElementById('wallet').style.left = '-400px';" href="{% url 'dashboard' %}"
+			data-toggle="tooltip" data-placement="top" title="Dashboard"><i class="fa fa-tachometer"
+				aria-hidden="true"></i>
+		</a>
+		<a onmouseenter="document.getElementById('wallet').style.left = '-400px';" href="{% url 'add_product' %}"
+			data-toggle="tooltip" data-placement="top" title="Add Product"><i class="fa fa-plus-square"
+				aria-hidden="true"></i></a>
+		<a onmouseenter="document.getElementById('wallet').style.left = '-400px';" href="{% url 'view_products' %}"
+			data-toggle="tooltip" data-placement="top" title="View My Products"><i class="fa fa-eye"
+				aria-hidden="true"></i></a>
+
+		<a href="##" data-container="body" data-toggle="popover" data-placement="right" data-trigger="focus"
+					data-html="true"
+					data-content="<a href='{% url 'saler_account_settings' %}'>Account Settings</a>" onmouseenter="document.getElementById('wallet').style.left = '-400px';" data-toggle="tooltip"
+			 title="User Profile"><i class="fa fa-user a" aria-hidden="true"></i></a>
+
+		<a onmouseenter="document.getElementById('wallet').style.left = '-400px';" href="{% url 'logout' %}"
+			data-toggle="tooltip" data-placement="top" title="Logout"><i class="fa fa-sign-out"
+				aria-hidden="true"></i></a>
+		<div style="bottom: 0; position: absolute;"><a
+				onmouseenter="document.getElementById('wallet').style.left = '40px';" data-toggle="tooltip"
+				data-placement="top" title="Wrappers"><img src="{% static 'main/images/wrapper_logo.png' %}"
+					style="width: 80%" class="mb-1"></a>
+		</div>
+	</div>
+	<!-- menu -->
+	<nav id="menu" style="display: none; z-index: 98">
+		<ul>
+			<!--<li class="active">
+				 <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Men's
+					Wear</a>
+				<ul class="collapse list-unstyled" id="homeSubmenu">
+					<li>
+						<a href="#">Lipistic</a>
+					</li>
+					<li>
+						<a href="#">Chappal</a>
+					</li>
+					<li>
+						<a href="#">Sandil</a>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<a href="#">Foodwear</a>
+			</li>
+			<li>
+				<a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Women's
+					Wear</a>
+				<ul class="collapse list-unstyled" id="pageSubmenu">
+					<li>
+						<a href="#">Lipistic</a>
+					</li>
+					<li>
+						<a href="#">Chappal</a>
+					</li>
+					<li>
+						<a href="#">Pata na ka</a>
+					</li>
+				</ul>
+			</li>-->
+			<li>
+				<a href="/contact">Contact Us</a>
+			</li> 
+			<li>
+				<a href="#">Terms & Conditions</a>
+			</li>
+		</ul>
+		<section style="bottom: 0; position: absolute; width: 100%; background-color: #231f20; color: #fff;">
+			<i class="fa fa-facebook-official" aria-hidden="true"></i>
+			<i class="fa fa-youtube-play" aria-hidden="true"></i>
+			<i class="fa fa-instagram" aria-hidden="true"></i>
+			<i class="fa fa-twitter-square" aria-hidden="true"></i>
+			<i class="fa fa-linkedin-square" aria-hidden="true"></i>
+			<i class="fa fa-rss-square" aria-hidden="true"></i>
+			| &copy; 2020
+		</section>
+	</nav>
+
+	<!-- wallet -->
+	<div align="center" style="align-items: center; margin: 0; padding: 0; display: inline;">
+		<ul class="wallet" id="wallet" style="z-index: 98;">
+			<li class="p-1">
+				<a href="{% url 'cart' %}"><i class="fa fa-shopping-cart" aria-hidden="true"
+						style="display: block;"><sup style="font-size: 12px;"> (<span
+								id="cart_no">{{cart_element_no}}</span>)</sup></i>View Cart</a>
+			</li>
+			<li class="p-1">
+				<a href="#"><i class="fa fa-archive" aria-hidden="true" style="display: block;"></i>My Orders</a>
+			</li>
+			<li class="p-1">
+				<a href="#"><i class="fa fa-history" aria-hidden="true" style="display: block;"></i>History</a>
+			</li>
+		</ul>
+	</div>
+	<!-- user -->
+	<div class="usr_detail" style="display: none;">
+
+	</div>
+
+	<main id="main">
+		{% block saler_body %}
+		{% endblock saler_body %}
+	</main>
+	{% block saler_js %}
+	{% endblock saler_js %}
+	<script type="text/javascript" src="{% static 'saler/js/main.js' %}"></script>
+	<script type="text/javascript">
+		let path = '{{request.path}}';
+		let elms = document.getElementById('nav').children;
+		for (var i = elms.length - 1; i >= 0; i--) {
+			if (elms[i].pathname == path) {
+				elms[i].style.color = '#be2714'
+			}
+		}
+	</script>
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script type="text/javascript" src="{% static 'main/js/bootstrap.min.js' %}"></script>
+
+	<script>
+		$(document).ready(function () {
+			$('[data-toggle="tooltip"]').tooltip();
+		});
+	</script>
+	<script>
+		$(document).ready(function () {
+			$('[data-toggle="popover"]').popover();
+		});
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,61 @@
+{% extends 'saler/base.html' %}
+{% block saler_head %}
+
+{% endblock saler_head %}
+{% load crispy_forms_tags %}
+
+{% block saler_body %}
+<div class="container-fluid">
+	{% if messages %}
+	{% for message in messages %}
+	<div class="alert alert-{{message.tags}}">{{ message }}</div>
+	{% endfor %}
+	{% endif %}
+	<div class="row p-1">
+		<div class="col-md-4">
+			<a href="{% url 'home' %}" class="logo">Wrappers</i></a>
+		</div>
+		<div class="col-md-4">
+			<h4 style="font-weight: bold; padding: 0; margin: 0; text-align: center;">Products in Your Store!</h4>
+		</div>
+		<!-- <div class="col-md-4">
+			<input class="form-control mr-sm-2" id="searchTxt" type="search"
+				placeholder="Search with Product Id or Name" aria-label="Search">
+		</div> -->
+	</div>
+	<hr class="p-0 m-0 mb-2">
+	<div class="noteCard">
+		<table class="table">
+			<thead class="thead-dark">
+				<tr>
+					<th scope="col">Product Id</th>
+					<th scope="col">Product Name</th>
+					<th scope="col">category</th>
+					<th scope="col">SubCategory</th>
+					<th scope="col">price</th>
+					<th scope="col" style="text-align: right;"><i class="fa fa-trash" aria-hidden="true"></i></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for pr in prod %}
+				<tr>
+					<th scope="row">{{pr.product_id}}</th>
+					<td>{{pr.product_name}}</td>
+					<td>{{pr.category}}</td>
+					<td>{{pr.subcategory}}</td>
+					<td>{{pr.price}}</td>
+					<form>
+						<input type="text" name="pro_id" value="{{pr.product_id}}" readonly style="display: none;">
+						<td style="text-align: right;"><button type="submit" class="btn" style="margin: 0;padding: 0"><i
+									class="fa fa-trash" aria-hidden="true"></i></button></td>
+
+					</form>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		<hr>
+	</div>
+</div>
+
+{% endblock saler_body %}

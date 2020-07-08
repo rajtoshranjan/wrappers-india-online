@@ -1,0 +1,191 @@
+{% extends "main/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block main_head %}
+<style type="text/css">
+	.detail_heading {
+		color: #231f20;
+		font-family: Candara;
+	}
+
+	.btn {}
+
+	.btn a {
+		color: #231f20;
+		text-decoration: none;
+	}
+
+	.btn:active {
+		border: solid 1px #bf2817;
+		border-radius: 0;
+	}
+
+
+	.detail {
+		-webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.17);
+		-moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.17);
+		-ms-box-shadow: 0 0 10px rgba(0, 0, 0, 0.17);
+		-o-box-shadow: 0 0 10px rgba(0, 0, 0, 0.17);
+		box-shadow: 0 0 10px rgba(0, 0, 0, 0.17);
+	}
+
+	@media(min-width:420px) {
+		.detail_heading {
+			font-size: 55px;
+			letter-spacing: 3px;
+
+		}
+	}
+
+	.removeing br {
+		display: none;
+	}
+
+	.removeing a {
+		display: none;
+	}
+
+	.form-group textarea {
+		height: 63px;
+	}
+
+	.sub_btn {
+		height: 30px;
+		width: 150px;
+		color: #fff;
+		font-weight: bold;
+		border: 0;
+		border-radius: 3px;
+		background-color: #231f20;
+	}
+
+	.sub_btn:hover {
+		background-color: #bf2817;
+		color: #f4f4f4;
+	}
+
+	@media(max-width: 420px) {}
+</style>
+
+<script>
+	function change(b_id) {
+
+		if (b_id == "change_pass") {
+			document.getElementById("account_update").style.display = 'none';
+			document.getElementById(b_id).style.display = "block";
+		}
+
+		else {
+			document.getElementById("account_update").style.display = 'block';
+			document.getElementById("change_pass").style.display = "none";
+		}
+	}
+</script>
+
+{% endblock main_head %}
+
+{% block main_body %}
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-{{message.tags}} alert-dismissible fade show">{{ message }}</div>
+{% endfor %}
+{% endif %}
+<div class="container">
+	<hr class="mb-1 mt-1">
+	<div class="row">
+		<div class="col-md-3 mt-2">
+			<div class="card">
+				<button type="button" class="btn" onclick="change('account_update')"
+					style="border-bottom: solid 1px #fff;"><a href="#detail">Update Profile</a></button>
+				<button type="button" class="btn" onclick="change('change_pass')"
+					style="border-bottom: solid 1px #fff;"><a href="#detail">Change Password</a></button>
+			</div>
+		</div>
+		<div class="col-md-9 mt-2">
+			<!-- Update Details -->
+			<div class="card detail" id="account_update" style="display: block; padding: 10px;padding-bottom: 50px;">
+				<h4 class="ml-3 mt-2" style="color: #231f20; font-family: Comic Sans MS; display: inline;">Hello,
+					{{request.user.first_name}} {{request.user.last_name}}</h4><img
+					src="{{ request.user.userdetail.photo.url }}" style="float: right; height: 30px; width: 30px">
+				<hr class="mt-1 mb-0">
+				<form method="POST" class="signup_form mt-1" enctype="multipart/form-data">
+					{% csrf_token %}
+					<div class="row">
+						<div class="form-group col-md-3 mb-0">
+							{{ u_form.first_name | as_crispy_field }}
+						</div>
+						<div class="form-group col-md-3 mb-0">
+							{{ u_form.last_name | as_crispy_field }}
+						</div>
+						<div class="form-group col-md-2 mb-0">
+							{{ s_form.dob | as_crispy_field }}
+						</div>
+						<div class="form-group col-md-2 mb-0">
+							{{ s_form.sex | as_crispy_field }}
+						</div>
+						<div class="form-group col-md-2 mb-0">
+							{{ s_form.mobile | as_crispy_field }}
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="form-group col-md-4 mb-0">
+							{{ u_form.email | as_crispy_field }}
+						</div>
+						<div class="form-group col-md-4 mb-0">
+							{{ s_form.landmark | as_crispy_field }}
+						</div>
+						<div class="form-group col-md-4 mb-0">
+							{{ s_form.locality | as_crispy_field }}
+						</div>
+
+					</div>
+					<div class="row">
+						<div class="form-group col-md-3 mb-0">
+							{{ s_form.city | as_crispy_field }}
+						</div>
+						<div class="form-group col-md-3 mb-0">
+							{{ s_form.state | as_crispy_field }}
+						</div>
+						<div class="form-group col-md-3 mb-0">
+							{{ s_form.pincode | as_crispy_field }}
+						</div>
+						<div class="form-group col-md-3 mb-0">
+							{{ s_form.alternate_mobile | as_crispy_field }}
+						</div>
+					</div>
+					<div class="row">
+
+						<div class="form-group col-md-8 mb-0">
+							{{ s_form.address | as_crispy_field }}
+						</div>
+						<div class="form-group col-md-4 mb-0 removeing">
+							{{ s_form.photo | as_crispy_field }}
+						</div>
+					</div>
+					<section class="mr-1">
+						<button type="submit" class="sub_btn" style="float: right;">Update</button>
+					</section>
+				</form>
+			</div>
+
+			<!-- Change Password -->
+			<div class="card detail" id="change_pass" style="display: none; padding-bottom: 40px">
+				<h4 class="ml-3 mt-2" style="color: #231f20; font-family: Comic Sans MS;">Change Password</h4>
+				<hr class="mt-1 mb-0">
+				<form method="POST" class="signup_form mr-3 ml-3 mt-1" enctype="multipart/form-data">
+					{% csrf_token %}
+					<fieldset>
+						{{ pass_change_form | crispy}}
+					</fieldset>
+					<section class="mt-1 mr-1 ml-1">
+						<button type="submit" class="sub_btn" style="float: right; width: 200px;">Change
+							Password</button>
+					</section>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock main_body %}

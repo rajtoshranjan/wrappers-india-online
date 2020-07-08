@@ -1,0 +1,44 @@
+{% extends 'main/base.html' %}
+{% block main_head %}
+{% load static %}
+<title>{{title}} || Wrappers</title>
+<link rel="stylesheet" type="text/css" href="{% static 'main/css/signup.css' %}">
+{% endblock main_head %}
+{% block main_body %}
+<div class="container-fluid">
+    <div class="row pt-1">
+        <div class="col-md-4">
+        </div>
+        <div class="col-md-4">
+        </div>
+        <div class="col-md-4">
+            <div class="card widget-flat">
+                <div class="card-body">
+                    <div class="subtitle mb-2 pt-2" style="text-align: center;">
+                        {% if title %}
+                        <h2 class="mb-2" style="color: #080d2b; margin-top: -25px;">{{ title }}</h2>
+                        {% else %}
+                        <h2 class="mb-2" style="color: #080d2b; margin-top: -25px;">Login </h2>
+                        {% endif %}
+                    </div>
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{message.tags}}">{{ message }}</div>
+                    {% endfor %}
+                    {% endif %}
+                    {% block body_account %}
+                    {% endblock body_account %}
+                </div>
+                <div align="center">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock main_body %}
+
+{% block main_script %}
+
+{% endblock main_script %}

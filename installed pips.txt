@@ -1,0 +1,3 @@
+pip install django-responsive2
+pip install django-crispy-forms
+pip install pillow

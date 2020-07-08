@@ -1,0 +1,336 @@
+{% extends 'main/base.html' %}
+{% load static %}
+    {% load app_tags %}
+{% block main_head %}
+<style type="text/css">
+    body {
+    min-height: 100vh;
+    background-size: cover;
+    font-family: 'Lato', sans-serif;
+    color: rgba(116, 116, 116, 0.667);
+    background: linear-gradient(140deg, #fff, 50%, #be2714)
+}
+
+.container-fluid {
+    margin-top: 200px
+}
+
+p {
+    font-size: 14px;
+    margin-bottom: 7px
+}
+
+.small {
+    letter-spacing: 0.5px !important
+}
+
+.card-1 {
+    box-shadow: 2px 2px 10px 0px rgb(190, 108, 170)
+}
+
+hr {
+    background-color: rgba(248, 248, 248, 0.667)
+}
+
+.bold {
+    font-weight: 500
+}
+
+.change-color {
+    color: #be2714 !important
+}
+
+.card-2 {
+    box-shadow: 1px 1px 3px 0px rgb(112, 115, 139)
+}
+
+.fa-circle.active {
+    font-size: 8px;
+    color: #be2714
+}
+
+.fa-circle {
+    font-size: 8px;
+    color: #aaa
+}
+
+.rounded {
+    border-radius: 2.25rem !important
+}
+
+.progress-bar {
+    background-color: #be2714 !important
+}
+
+.progress {
+    height: 5px !important;
+    margin-bottom: 0
+}
+
+.invoice {
+    position: relative;
+    top: -70px
+}
+
+.Glasses {
+    position: relative;
+    top: -12px !important
+}
+
+.card-footer {
+    background-color: #be2714;
+    color: #fff
+}
+
+h2 {
+    color: rgb(78, 0, 92);
+    letter-spacing: 2px !important
+}
+
+.display-3 {
+    font-weight: 500 !important
+}
+
+@media (max-width: 479px) {
+    .invoice {
+        position: relative;
+        top: 7px
+    }
+
+    .border-line {
+        border-right: 0px solid rgb(226, 206, 226) !important
+    }
+}
+
+@media (max-width: 700px) {
+    h2 {
+        color: rgb(78, 0, 92);
+        font-size: 17px
+    }
+
+    .display-3 {
+        font-size: 28px;
+        font-weight: 500 !important
+    }
+}
+
+.card-footer small {
+    letter-spacing: 7px !important;
+    font-size: 12px
+}
+
+.border-line {
+    border-right: 1px solid rgb(226, 206, 226)
+}
+</style>
+{% endblock main_head %}
+{% block main_body %}
+<div style="width: 100%; text-align: center;">
+    <div class="custom-control custom-radio custom-control-inline" onclick="document.getElementById('orders').style.display = 'block';document.getElementById('delivered').style.display = 'none';document.getElementById('cancel').style.display = 'none';">
+      <input type="radio" id="customRadioInline1" name="customRadioInline1" class="custom-control-input" checked="">
+      <label class="custom-control-label" for="customRadioInline1">Orders</label>
+    </div>
+    <div class="custom-control custom-radio custom-control-inline" onclick="document.getElementById('orders').style.display = 'none';document.getElementById('delivered').style.display = 'block';document.getElementById('cancel').style.display = 'none';">
+      <input type="radio" id="customRadioInline2" name="customRadioInline1" class="custom-control-input">
+      <label class="custom-control-label" for="customRadioInline2">Delivered</label>
+    </div>
+    <div class="custom-control custom-radio custom-control-inline"onclick="document.getElementById('orders').style.display = 'none';document.getElementById('delivered').style.display = 'none';document.getElementById('cancel').style.display = 'block';">
+      <input type="radio" id="customRadioInline3" name="customRadioInline1" class="custom-control-input">
+      <label class="custom-control-label" for="customRadioInline3">Canceled</label>
+    </div>
+</div>
+<div id="orders">
+    <div class="container-fluid my-4 d-flex justify-content-center">
+
+        <div class="card card-1">
+            <div class="card-header bg-white">
+                <div class="media flex-sm-row flex-column-reverse justify-content-between ">
+                    <div class="col my-auto">
+                        <h4 class="mb-0">Thanks for your Order, <span class="change-color">{{request.user.first_name}}</span> !</h4>
+                    </div>
+                    <div class="col-auto text-center my-auto pl-0 sm-4"> <img class="img-fluid my-auto align-items-center mb-0 pt-3" src="{% static 'main/images/logo.png' %}" width="115" height="115">
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                {% for ord in orders %}
+                <div class="row pb-2">
+                    <div class="col">
+                        <div class="card card-2">
+                            <div class="card-body">
+                                {% for item in ord.products|split:',' %}
+                                <div class="media mb-2">
+                                    {% if item|product:'|'|slice:'0:1'|remfl:'2'%}
+                                    <div class="sq align-self-center "> <img class="img-fluid my-auto align-self-center mr-2 mr-md-4 pl-0 p-0 m-0" src="{{item|product:'|'|slice:'1:2'|remfl:'2'}}" width="50" /> </div>
+                                    <div class="media-body my-auto text-right">
+                                        <div class="row my-auto flex-column flex-md-row">
+                                            <div class="col-sm-7 my-auto">
+                                                <h6 class="mb-0"> {{item|product:'|'|slice:'0:1'|remfl:'2'}}</h6>
+                                            </div>
+                                            <div class="col my-auto"> <small>Qty : {{item|split:'|'|slice:'1:2'|remfl:'2'}}</small></div>
+                                            <div class="col my-auto">
+                                                <h6 class="mb-0"><i class="fa fa-inr" aria-hidden="true"></i>{{item|product:'|'|slice:'2:3'|remfl:'1'}}</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                                <hr class="my-3 ">
+                                <div class="row">
+                                    <div class="col-md-3 mb-3"> <small>Order Id: <span>{{ord.order_id}}</span></small> </div>
+                                    <div class="col mt-auto">
+                                        <div class="progress my-auto">
+                                            {% if ord.status == 'Accepted' %}
+                                            <div class="progress-bar progress-bar rounded" style="width: 20%" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                            {% elif ord.status == 'Packed' %}
+                                            <div class="progress-bar progress-bar rounded" style="width: 60%" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                            {% elif ord.status == 'Delivered' %}
+                                            <div class="progress-bar progress-bar rounded" style="width: 100%" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+
+                                            {% endif %}
+                                        </div>
+                                        <div class="media row justify-content-between ">
+                                            <div class="col-auto text-right"><span> <small class="text-right mr-sm-2">Accepted</small> <i class="fa fa-circle active"></i> </span></div>
+                                            <div class="flex-col"> <span> <small class="text-right mr-sm-2">Packed</small><i class="fa fa-circle active"></i></span></div>
+                                            <div class="col-auto flex-col-auto"><small class="text-right mr-sm-2">Delivered</small><span> <i class="fa fa-circle active"></i></span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-0 m-0 w-100">
+                                    {% if not ord.status == 'Accepted' and not ord.status == 'Delivered' and not ord.status == 'Packed' %}
+                                    <form method="POST">{% csrf_token %}
+                                         <input type="text" name="order_id" value="{{ord.order_id}}" readonly style="display: none;">
+                                         <button style=" background-color: #231f20; color: #fff; border-color: #231f20;" class="mt-1 w-100">CANCEL</button>
+                                    </form>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+<!-- DElEVERD -->
+<div id="delivered" style="display: none;">
+    <div class="container-fluid my-4 d-flex justify-content-center" id="delivered" style="display: none;">
+
+        <div class="card card-1">
+            <div class="card-header bg-white">
+                <div class="media flex-sm-row flex-column-reverse justify-content-between ">
+                    <div class="col my-auto">
+                        <h4 class="mb-0">Thanks for your Order, <span class="change-color">{{request.user.first_name}}</span> !</h4>
+                    </div>
+                    <div class="col-auto text-center my-auto pl-0 sm-4"> <img class="img-fluid my-auto align-items-center mb-0 pt-3" src="{% static 'main/images/logo.png' %}" width="115" height="115">
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                {% for ord in delivered %}
+                <div class="row pb-2">
+                    <div class="col">
+                        <div class="card card-2">
+                            <div class="card-body">
+                                {% for item in ord.products|split:',' %}
+                                <div class="media mb-2">
+                                    {% if item|product:'|'|slice:'0:1'|remfl:'2'%}
+                                    <div class="sq align-self-center "> <img class="img-fluid my-auto align-self-center mr-2 mr-md-4 pl-0 p-0 m-0" src="{{item|product:'|'|slice:'1:2'|remfl:'2'}}" width="50" /> </div>
+                                    <div class="media-body my-auto text-right">
+                                        <div class="row my-auto flex-column flex-md-row">
+                                            <div class="col-sm-7 my-auto">
+                                                <h6 class="mb-0"> {{item|product:'|'|slice:'0:1'|remfl:'2'}}</h6>
+                                            </div>
+                                            <div class="col my-auto"> <small>Qty : {{item|split:'|'|slice:'1:2'|remfl:'2'}}</small></div>
+                                            <div class="col my-auto">
+                                                <h6 class="mb-0"><i class="fa fa-inr" aria-hidden="true"></i>{{item|product:'|'|slice:'2:3'|remfl:'1'}}</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                                <hr class="my-3 ">
+                                <div class="row">
+                                    <div class="col-md-3 mb-3"> <small>Order Id: <span>{{ord.order_id}}</span></small> </div>
+                                    <div class="col mt-auto">
+                                        <div class="progress my-auto">
+
+                                            <div class="progress-bar progress-bar rounded" style="width: 100%" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+
+                                        </div>
+                                        <div class="media row justify-content-between ">
+                                            <div class="col-auto text-right"><span> <small class="text-right mr-sm-2">Accepted</small> <i class="fa fa-circle active"></i> </span></div>
+                                            <div class="flex-col"> <span> <small class="text-right mr-sm-2">Packed</small><i class="fa fa-circle active"></i></span></div>
+                                            <div class="col-auto flex-col-auto"><small class="text-right mr-sm-2">Delivered</small><span> <i class="fa fa-circle active"></i></span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+<!-- canceled -->
+<div id="cancel" style="display: none;">
+    <div class="container-fluid my-4 d-flex justify-content-center">
+
+        <div class="card card-1">
+            <div class="card-header bg-white">
+                <div class="media flex-sm-row flex-column-reverse justify-content-between ">
+                    <div class="col my-auto">
+                        <h4 class="mb-0">Thanks for your Order, <span class="change-color">{{request.user.first_name}}</span> !</h4>
+                    </div>
+                    <div class="col-auto text-center my-auto pl-0 sm-4"> <img class="img-fluid my-auto align-items-center mb-0 pt-3" src="{% static 'main/images/logo.png' %}" width="115" height="115">
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                {% for ord in cancel %}
+                <div class="row pb-2">
+                    <div class="col">
+                        <div class="card card-2">
+                            <div class="card-body">
+                                {% for item in ord.products|split:',' %}
+                                <div class="media mb-2">
+                                    {% if item|product:'|'|slice:'0:1'|remfl:'2'%}
+                                    <div class="sq align-self-center "> <img class="img-fluid my-auto align-self-center mr-2 mr-md-4 pl-0 p-0 m-0" src="{{item|product:'|'|slice:'1:2'|remfl:'2'}}" width="50" /> </div>
+                                    <div class="media-body my-auto text-right">
+                                        <div class="row my-auto flex-column flex-md-row">
+                                            <div class="col-sm-7 my-auto">
+                                                <h6 class="mb-0"> {{item|product:'|'|slice:'0:1'|remfl:'2'}}</h6>
+                                            </div>
+                                            <div class="col my-auto"> <small>Qty : {{item|split:'|'|slice:'1:2'|remfl:'2'}}</small></div>
+                                            <div class="col my-auto">
+                                                <h6 class="mb-0"><i class="fa fa-inr" aria-hidden="true"></i>{{item|product:'|'|slice:'2:3'|remfl:'1'}}</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                                <hr class="my-3 ">
+                                <div class="row">
+                                    <div class="col-md-3 mb-3"> <small>Order Id: <span>{{ord.order_id}}</span></small> </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main_body %}

@@ -1,0 +1,108 @@
+{% extends 'main/account_base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block body_account %}
+<style type="text/css">
+  input {
+    display: none;
+  }
+</style>
+<form method="POST" class="signup_form mr-2 ml-2">
+  {% csrf_token %}
+  <fieldset>
+    <div class="form-row">
+      <div class="form-group col-md-6 mb-0">
+        {{ form.first_name | as_crispy_field }}
+      </div>
+      <div class="form-group col-md-6 mb-0">
+        {{ form.last_name | as_crispy_field }}
+      </div>
+    </div>
+    {{ form.username| as_crispy_field }}
+    <p id="error_1_id_username" class="invalid-feedback" style="display: inline-block;"><strong id="usrerr"></strong>
+    </p>
+    {{ form.shop| as_crispy_field }}
+    {{ form.gst| as_crispy_field }}
+    <p id="error_1_id_username" class="invalid-feedback" style="display: inline-block;"><strong id="gstt"></strong>
+    <div class="form-row">
+      <div class="form-group col-md-6 mb-0">
+        {{form.password1 | as_crispy_field }}
+      </div>
+      <div class="form-group col-md-6 mb-0">
+        {{ form.password2 | as_crispy_field }}
+      </div>
+    </div>
+  </fieldset>
+  <section class="mt-4 mr-1 ml-1">
+    <button type="submit" id="disbtn1">Sign Up</button>
+    <small>Already Registered? &nbsp;<a href="{% url 'login' %}">Log In</a></small>
+  </section>
+  <div class="subtitle pt-2 mt-1"></div>
+</form>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script>
+  function ValidateEmail(mail) {
+    var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    // if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(myForm.emailAddr.value))
+    if (mail.match(mailformat)) {
+      document.getElementById('usrerr').innerText = "";
+      document.getElementById('disbtn1').disabled = false;
+
+      return (true)
+    }
+    document.getElementById('usrerr').innerText = "You have entered an invalid email address!";
+    document.getElementById('disbtn1').disabled = true;
+
+    return (false)
+  }
+
+  function validate() {
+    var data = document.getElementById("id_username").value;
+    checkNumberorEmail();
+
+  }
+  function phonenumber(inputtxt) {
+    var phoneno = /^\d{10}$/;
+    if (inputtxt.match(phoneno)) {
+      document.getElementById('usrerr').innerText = "";
+      document.getElementById('disbtn1').disabled = false;
+      return true;
+    }
+    else {
+      document.getElementById('usrerr').innerText = "enter 10 digit number";
+      document.getElementById('disbtn1').disabled = true;
+
+      return false;
+    }
+  }
+
+
+  function checkNumberorEmail() {
+    var data = document.getElementById("id_username").value;
+    if (isNaN(data)) {
+      ValidateEmail(data);
+
+    }
+    else {
+      phonenumber(data);
+    }
+  }
+</script>
+<script>
+      $(document).on('change',"#id_gst", function(){
+        var inputvalues = $(this).val();
+        var gstinformat = new RegExp('^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$');
+
+        if (gstinformat.test(inputvalues)) {
+         return true;
+        } else {
+            document.getElementById('gstt').innerText = 'Please Enter Valid GSTIN Number';
+            $("#id_gst").val('');
+            $("#id_gst").focus();
+        }
+
+    });
+    </script>
+{% endblock body_account %}
