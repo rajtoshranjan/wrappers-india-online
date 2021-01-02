@@ -1,18 +1,21 @@
 {% extends 'main/base.html' %}
 {% block main_head %}
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
 <style type="text/css">
 	
 /*****************globals*************/
 body {
- 
+ background-color: #e2eaef;
   overflow-x: hidden; }
 
 .tab-pane {
 	width: 450px;
 	height: auto;
+}
+
+li img {
+  border-left: solid 1px #e2eaef;
+  border-right: solid 1px #e2eaef;
 }
 
 .preview {
@@ -111,49 +114,6 @@ body {
   .size:first-of-type {
     margin-left: 40px; }
 
-.color {
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 5px;
-  height: 1em;
-  width: 1em;
-  border-radius: 2px; }
-  .color:first-of-type {
-    margin-left: 20px; }
-
-.add-to-cart{
-	height: 50px;
-  background: #be2714;
-  padding: 1em 1em;
-  border: none;
-  text-transform: UPPERCASE;
-  font-weight: bold;
-  color: #fff;
-  -webkit-transition: background .3s ease;
-          transition: background .3s ease; }
-  .add-to-cart:hover,{
-    background: #b36800;
-    color: #fff; }
-
-.not-available {
-  text-align: center;
-  line-height: 2em; }
-  .not-available:before {
-    font-family: fontawesome;
-    content: "\f00d";
-    color: #fff; }
-
-.orange {
-  background: #ff9f1a; }
-
-.green {
-  background: #85ad00; }
-
-.blue {
-  background: #0076ad; }
-
-.tooltip-inner {
-  padding: 1em; }
 
 @-webkit-keyframes opacity {
   0% {
@@ -228,14 +188,14 @@ $.fn.preload = function() {
 {% endblock main_head %}
 {% block main_body %}
 {% load static %}
-	<div class="container-fliud">
+	<div class="container-fluid mt-3">
 		<div class="card mt-0">
-			<div class="container-fliud">
+			<div class="container-fluid">
 				<div class="wrapper row">
-					<div class="preview col-md-6" style="">
+					<div class="preview col-md-4" style="">
 						<div id="gallery">
 							<div class="preview-pic tab-content">
-							  <div class="tab-pane active" ><img src="{{product.image1.url}}" style="height: 500px; width: auto;" alt="" id="main-img"/></div>
+							  <div class="tab-pane active" style="height: 400px; width: auto; display: flex;"><img src="{{product.image1.url}}"  alt="" id="main-img" style="max-height: 100%; max-width:100%; width: auto; margin: auto" /></div>
 							
 							</div>
 							<ul class="preview-thumbnail nav nav-tabs">
@@ -255,7 +215,7 @@ $.fn.preload = function() {
 							</ul>	
 						</div>					
 					</div>
-					<div class="details col-md-6" style="float: left;">
+					<div class="details col-md-5" style="border-left: solid 1px #e2eaef; border-right: solid 1px #e2eaef;">
 						
 						<h3 class="product-title">{{product.product_name}}</h3>
 
@@ -263,6 +223,7 @@ $.fn.preload = function() {
 						<h4 class="price"><p><span class="item_price"><span><i class="fa fa-inr"
 											aria-hidden="true"></i></span>{{product.price}}</span> <del><i class="fa fa-inr"
 											aria-hidden="true"></i>{{product.price_not}}</del></p></h4>
+            {% if sizes %}
 						<h5 class="sizes">sizes:
               {% for me in sizes %}
 							<span class="size" data-toggle="tooltip" title="small">{{me.size}}</span>
@@ -288,14 +249,46 @@ $.fn.preload = function() {
                         </div>
                         <a p_id="{{product.product_id}}" class="btn btn-primary oprbtn"  style="padding: 5px 10px 5px 5px;" id="atc{{product.product_id}}">Add to Cart</a>
                         <div id="atc{{product.product_id}}sizesof" style="display: none;">
-                          <h6>Select any Size for Add To Car</h6>
+                          <h6>Select any Size for Add To Cart</h6>
                           {% for me in sizes %}
                           <a prod_id="{{product.product_id}}" class="btn btn-danger pt-1 pb-1 pr-2 pl-2 add_to_cart">{{me.size}}</a>
                           {% endfor %}
                         </div>
                   </div>
-            </div>  				
+            </div>  
+            {% else %}
+            <div style="display:inline">
+                <form method="GET" style="display: inline;" action="/order_now">
+                            <input type="text" name="prod_id" value="{{product.product_id}}" style="display: none;">
+                            <button type="submit" class="btn btn-danger pt-1 pb-1 pr-2 pl-2">Order Now</button>
+                          </form> 
+                  <a prod_id="{{product.product_id}}" class="btn btn-danger pt-1 pb-1 pr-2 pl-2 add_to_cart"><i class="fa fa-cart-plus" aria-hidden="true"></i></a>
+              </div>
+            {% endif %}				
 					</div>
+          <div class="col-md-3">
+            <div class="float-right w-100">
+              <h5 class="product-title float-right">Reviews*</h2>
+              {% if request.user.is_authenticated %}
+                <form method="post">{% csrf_token %}
+                  <div class="input-group mb-3 ">
+                    <input type="text" class="form-control form-control-sm" placeholder="Enter Your Review" aria-label="Enter Your Review" aria-describedby="button-addon2" name="review">
+                    <div class="input-group-append">
+                      <button type="submit" style="border: none;" class="btn-secondary form-control-sm" type="button" id="button-addon2"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+                    </div>
+                  </div>
+                </form>
+              {% endif %}
+              <div style="height: 400px; overflow-y: scroll;">
+                {% for review in product_review %}
+                  <div class="bd-callout bd-callout-warning mb-1">
+                    <h6 class="m-0 p-0" id="conveying-meaning-to-assistive-technologies">{{review.user.get_full_name}}</h6>
+                    <small class="pl-1 text-muted">{{review.review}}</small>
+                    </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
 				</div>
 			</div>
 		</div>

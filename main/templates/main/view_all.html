@@ -109,6 +109,9 @@ h2::after {
 <div class="container-fluid" style="background-color: #e2eaef;">
 		<h2>All <b>{{catg}}</b> Products</h2>
 		<div class="row pt-1" style="justify-content: center;">
+			{% if not product %}
+			<div class="text-center"><img src="{% static 'main/images/no-product-found.png' %}"><h3 class="">Please check the spelling or try searching for something else</h3></div>
+			{% endif %}
 			{% for i in product reversed %}
 			<div class="p-1 prod1212">
 				<a href="{% url 'home' %}product/{{i.0.product_id}}" style="text-decoration: none; color: #231f20">
@@ -123,6 +126,7 @@ h2::after {
 												aria-hidden="true"></i>{{i.0.price}}</span></p>
 
 						<div>
+							{% if i.1 %}
 							<a p_id="{{i.0.product_id}}" class="btn btn-primary oprbtn" id="ord{{i.0.product_id}}">Order Now</a>
 							<div id="ord{{i.0.product_id}}sizesof" style="display: none;">
 								{% for me in i.1 %}
@@ -139,6 +143,14 @@ h2::after {
 								<a prod_id="{{i.0.product_id}}" class="btn pt-1 pb-1 pr-2 pl-2 add_to_cart">{{me.size}}</a>
 								{% endfor %}
 							</div>
+							{% else %}
+											<form method="GET" style="display: inline;" action="/order_now">
+														<input type="text" name="prod_id" value="{{i.0.product_id}}" style="display: none;">
+										
+														<button type="submit" class="btn btn-primary oprbtn">Order Now</button>
+													</form>	
+												<a prod_id="{{i.0.product_id}}" class="btn pt-1 pb-1 pr-2 pl-2 add_to_cart"><i class="fa fa-cart-plus" aria-hidden="true"></i></a>
+										{% endif %}
 						</div>
 					</div>
 				</div>

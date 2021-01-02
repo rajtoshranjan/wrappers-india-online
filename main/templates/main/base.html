@@ -205,6 +205,8 @@
 		$('.add_to_cart').click(function () {
 			var id = $(this).attr("prod_id");
 			var siz= this.innerText;
+			if(siz == "Add To Cart")
+				siz = "None"
 			var catid = ''+id+','+siz;
 			$.ajax(
 				{

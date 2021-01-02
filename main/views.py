@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from .models import UserDetail, Slider, Contact, Cart
 from django.contrib.auth.decorators import login_required
-from saler.models import Product, ProductSize, dow, category, Orders, trend
+from saler.models import Product, ProductSize, dow, category, Orders, trend, ProductReview
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.views.decorators.csrf import csrf_exempt
@@ -90,7 +90,7 @@ def account_settings(request):
 	else:
 		s_form = UpdateUserDetailForm(instance=request.user.userdetail)
 		u_form = UserUpdateForm(instance=request.user)
-		pass_change_form = PasswordChangeForm(request.user, request.POST)
+		pass_change_form = PasswordChangeForm(request.user)
 	detl = {
 		'u_form':u_form,
 		's_form':s_form,
@@ -102,8 +102,16 @@ def account_settings(request):
 	return render(request, 'main/account_settings.html', detl)
 
 def productView(request, prod_id):
+	if request.method == 'POST' and request.user.is_authenticated:
+		prod = Product.objects.filter(product_id = prod_id).first()
+		review = request.POST.get('review')
+		ProductReview(user=request.user,product=prod,review=review).save()
+		return redirect(f"/product/{prod_id}")
+
+	prod = Product.objects.filter(product_id = prod_id).first()
 	params = {
-		'product':Product.objects.filter(product_id = prod_id)[0],
+		'product':prod,
+		'product_review': ProductReview.objects.filter(product = prod),
 		'sizes':[item for item in ProductSize.objects.filter(product=Product.objects.filter(product_id = prod_id)[0])],
 		'cart_element_no' : len([p for p in Cart.objects.all() if p.user == request.user]),
 		'category':category.objects.all(),
@@ -149,7 +157,7 @@ def search(request):
 	prods = []
 	for prod in [i for i in Product.objects.all() ]:
 		if query.lower() in prod.product_name.lower() or query.lower() in prod.desc.lower() or query.lower() in prod.subcategory.lower():
-			prods.append(prod)
+			prods.append([prod,[item for item in ProductSize.objects.filter(product=prod)]])
 	params = {
 		'product':prods,
 		'cart_element_no' : len([p for p in Cart.objects.all() if p.user == request.user]),
@@ -185,10 +193,12 @@ def cart(request):
 		allProds = []
 		subtotal = 0.0
 		delev = 0.0
+		tax = 0.0
 		cart_prods = [p for p in Cart.objects.all() if p.user == request.user]
 		for p in cart_prods:
-			subtotal += p.number * Product.objects.filter(product_id=p.product_id)[0].price
-		tax = subtotal*5/100
+			tempTotal = p.number * Product.objects.filter(product_id=p.product_id)[0].price
+			subtotal += tempTotal
+			tax += tempTotal*int(Product.objects.filter(product_id=p.product_id).first().gst)/100
 
 		for cprod in cart_prods:
 			prod = Product.objects.filter(product_id=cprod.product_id)[0]
@@ -230,10 +240,13 @@ def plus_element_cart(request):
 		c.save()
 		subtotal = 0.0
 		delev = 0.0
+		tax = 0.0
 		cart_prods2 = [p for p in Cart.objects.all() if p.user == request.user]
 		for p in cart_prods2:
-			subtotal += p.number * Product.objects.filter(product_id=int(p.product_id))[0].price
-		tax = subtotal*5/100
+			tempTotal = p.number * Product.objects.filter(product_id=p.product_id)[0].price
+			subtotal += tempTotal
+			tax += tempTotal*int(Product.objects.filter(product_id=p.product_id).first().gst)/100
+
 		datas = {
 			'num':Cart.objects.get(id=prod_id).number,
 			'tax':tax,
@@ -254,10 +267,13 @@ def minus_element_cart(request):
 		c.save()
 		subtotal = 0.0
 		delev = 0.0
+		tax = 0.0
 		cart_prods2 = [p for p in Cart.objects.all() if p.user == request.user]
 		for p in cart_prods2:
-			subtotal += p.number * Product.objects.filter(product_id=int(p.product_id))[0].price
-		tax = subtotal*5/100
+			tempTotal = p.number * Product.objects.filter(product_id=p.product_id)[0].price
+			subtotal += tempTotal
+			tax += tempTotal*int(Product.objects.filter(product_id=p.product_id).first().gst)/100
+
 		datas = {
 			'num':Cart.objects.get(id=prod_id).number,
 			'tax':tax,
@@ -278,10 +294,13 @@ def delete_from_cart(request):
 		c.delete()
 		subtotal = 0.0
 		delev = 0.0
+		tax = 0.0
 		cart_prods2 = [p for p in Cart.objects.all() if p.user == request.user]
 		for p in cart_prods2:
-			subtotal += p.number * Product.objects.filter(product_id=int(p.product_id))[0].price
-		tax = subtotal*5/100
+			tempTotal = p.number * Product.objects.filter(product_id=p.product_id)[0].price
+			subtotal += tempTotal
+			tax += tempTotal*int(Product.objects.filter(product_id=p.product_id).first().gst)/100
+
 		datas = {
 			'num':len(cart_prods2),
 			'tax':tax,
@@ -293,6 +312,7 @@ def delete_from_cart(request):
 	else:
 		return HttpResponse("")
 
+MERCHANT_KEY = 'wPyn90L7Z9#4%8!Q'
 @login_required
 def order_now(request):
 	allProds =[]
@@ -312,7 +332,10 @@ def order_now(request):
 			trends = [i.product.product_id for i in trend.objects.all()]
 # 			print(order)
 			if pay_mode == 'on':
-				order_id = 'ordr'+str((Orders.objects.all().last().pk)+1)
+				if Orders.objects.all().last():
+					order_id = 'ordr'+str((Orders.objects.all().last().pk)+1)
+				else:
+					order_id = 'ordr001'
 				product1 = new_prod+'|'+str(1)+','
 				Orders(order_id=order_id,user=request.user,saler=Product.objects.filter(product_id=int(new_prod)).first().shop,products=product1,size=prod_size).save()
 				if int(new_prod) in trends:
@@ -323,7 +346,39 @@ def order_now(request):
 				    trend(product = Product.objects.filter(product_id=int(new_prod)).first(), number=1).save()
 				return redirect('/myorders')
 			else:
-				pass
+				o_id = ''
+				if Orders.objects.all().last():
+					order_id = 'ordr'+str((Orders.objects.all().last().pk)+1)
+				else:
+					order_id = 'ordr001'
+				o_id = order_id
+				product1 = new_prod+'|'+str(1)+','
+				Orders(order_id=order_id,user=request.user,saler=Product.objects.filter(product_id=int(new_prod)).first().shop,products=product1,size=prod_size).save()
+				if int(new_prod) in trends:
+				    t = trend.objects.filter(product = Product.objects.filter(product_id=int(new_prod)).first())[0]
+				    t.number += 1
+				    t.save()
+				else:
+				    trend(product = Product.objects.filter(product_id=int(new_prod)).first(), number=1).save()
+				delev = 0.0
+				subtotal = Product.objects.filter(product_id=int(new_prod)).first().price
+				tax = subtotal*int(Product.objects.filter(product_id=int(new_prod)).first().gst)/100
+	
+				param_dict = {
+
+		                'MID': 'jrKRuI18276169326503',
+		                'ORDER_ID': str(o_id),
+		                'TXN_AMOUNT': str(subtotal+tax+delev),
+		                'CUST_ID': request.user.username,
+		                'INDUSTRY_TYPE_ID': 'Retail',
+		                'WEBSITE': 'WEBSTAGING',
+		                'CHANNEL_ID': 'WEB',
+		                'CALLBACK_URL':'http://127.0.0.1:8000/handlerequest/',
+
+		        }
+				param_dict['CHECKSUMHASH'] = Checksum.generate_checksum(param_dict, MERCHANT_KEY)
+				return render(request, 'main/paytm.html', {'param_dict': param_dict})
+
 	else:
 		address_form = UserAddressForm(instance=request.user.userdetail)
 		u_form2 = UserAddressForm1(instance=request.user)
@@ -341,7 +396,6 @@ def order_now(request):
 		}
 	return render(request, 'main/checkout2.html', params)
 
-MERCHANT_KEY = 'wPyn90L7Z9#4%8!Q'
 @login_required
 def checkout(request):
 	temp = 0
@@ -361,7 +415,10 @@ def checkout(request):
 # 			print(order)
 			if pay_mode == 'on':
 				for item in cart_prods:
-					order_id = 'ordr'+str((Orders.objects.all().last().pk)+1)
+					if Orders.objects.all().last():
+						order_id = 'ordr'+str((Orders.objects.all().last().pk)+1)
+					else:
+						order_id = 'ordr001'
 					product1 = item.product_id+'|'+str(item.number)+','
 					Orders(order_id=order_id,user=request.user,saler=Product.objects.filter(product_id=int(item.product_id)).first().shop,products=product1, size=item.product_size).save()
 					item.delete()
@@ -379,9 +436,12 @@ def checkout(request):
 		u_form2 = UserAddressForm1(instance=request.user)
 	subtotal = 0.0
 	delev = 0.0
+	tax = 0.0
 	for p in cart_prods:
-		subtotal += p.number * Product.objects.filter(product_id=p.product_id)[0].price
-	tax = subtotal*5/100
+		tempTotal = p.number * Product.objects.filter(product_id=p.product_id)[0].price
+		subtotal += tempTotal
+		tax += tempTotal*int(Product.objects.filter(product_id=p.product_id).first().gst)/100
+
 	if temp == 1:
 		o_id = ''
 		for item in cart_prods:

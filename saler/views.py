@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
-from .models import SalerDetail, Product, ProductSize, SellerSlider, MyCart, WholeSaleProduct, category, Orders
+from .models import SalerDetail, Product, ProductSize, SellerSlider, MyCart, WholeSaleProduct, category, Orders, WholeSaleProductOrders
 from django.contrib import messages
 from django.contrib.auth.models import User
 from .forms import SalerRegisterForm, SalerAddressForm, UpdateSalerDetailForm, UpdateSalerAccountDetailForm
@@ -10,6 +10,7 @@ from math import ceil
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 
+#This is view of Index Page of Seller in which we Display Whole Sale Products
 @login_required
 def index(request):
 	if request.user.is_superuser or request.user.is_staff:
@@ -33,6 +34,7 @@ def index(request):
 	else:
 		return redirect("/")
 
+# This is View of Dashboard in which we display all orders of the seller and ther status
 @login_required
 def dashboard(request):
 	if request.user.is_superuser or request.user.is_staff:
@@ -65,6 +67,7 @@ def dashboard(request):
 	else:
 		return redirect("/")
 
+# This is add to cart view of Seller means Whole Sale Products
 @login_required
 def add_to_cart(request):
 	cart_prods = [p for p in MyCart.objects.all() if p.user == request.user]
@@ -82,6 +85,7 @@ def add_to_cart(request):
 	else:
 		return HttpResponse("")
 
+# This is view for Increasing Quantity of any Product in Cart
 @login_required
 def plus_element_cart(request):
 	cart_prods = [p for p in MyCart.objects.all() if p.user == request.user]
@@ -108,6 +112,7 @@ def plus_element_cart(request):
 	else:
 		return HttpResponse("")
 
+# This is view for Decreasing Quantity of any Product in Cart
 @login_required
 def minus_element_cart(request):
 	cart_prods = [p for p in MyCart.objects.all() if p.user == request.user]
@@ -134,7 +139,7 @@ def minus_element_cart(request):
 	else:
 		return HttpResponse("")
 
-
+# This is view for Deleting a Product from Cart
 @login_required
 def delete_from_cart(request):
 	cart_prods = [p for p in MyCart.objects.all() if p.user == request.user]
@@ -160,6 +165,7 @@ def delete_from_cart(request):
 	else:
 		return HttpResponse("")
 
+# This view for Display a Single Product 
 @login_required
 def productView(request, prod_id):
 	if request.user.is_superuser or request.user.is_staff:
@@ -170,6 +176,8 @@ def productView(request, prod_id):
 		return render(request, 'saler/productview.html', params)
 	else:
 		return redirect("/")
+
+# This is View of Display all Products of a perticular category
 @login_required
 def view_all(request, catg):
 	if request.user.is_superuser or request.user.is_staff:
@@ -182,6 +190,7 @@ def view_all(request, catg):
 	else:
 		return redirect("/")
 
+# seller cart view
 @login_required
 def mycart(request):
 	if request.user.is_superuser or request.user.is_staff:
@@ -208,6 +217,7 @@ def mycart(request):
 	else:
 		return redirect("/")
 
+# seller checkout view means for whole sale products
 def checkout(request):
 	if request.user.is_superuser or request.user.is_staff:
 		allProds = []
@@ -219,6 +229,15 @@ def checkout(request):
 			address_form = SalerAddressForm(request.POST, instance=request.user.salerdetail)
 			if address_form.is_valid():
 				address_form.save()
+				for item in cart_prods:
+					if WholeSaleProductOrders.objects.all().last():
+						order_id = 'WSPOrder'+str((WholeSaleProductOrders.objects.all().last().pk)+1)
+					else:
+						order_id = 'WSPOrder001'
+					product1 = item.product_id+'|'+str(item.number)+','
+					WholeSaleProductOrders(order_id=order_id,user=request.user,products=product1).save()
+					item.delete()
+				return redirect('/myorders')
 		else:
 			address_form = SalerAddressForm(instance=request.user.salerdetail)
 
@@ -237,6 +256,22 @@ def checkout(request):
 	else:
 		return redirect("/")
 
+# Orders of Seller (Whole sale product)
+def MyOrders(request):
+	if request.method == 'POST':
+		order_id = request.POST.get('order_id')
+		o = WholeSaleProductOrders.objects.filter(order_id=order_id)[0]
+		o.status = 'Cancel'
+		o.save()
+	params = {
+		'orders': [i for i in WholeSaleProductOrders.objects.all() if i.user == request.user and i.status != 'Delivered' and i.status != 'Cancel'],
+		'delivered': [i for i in WholeSaleProductOrders.objects.all() if i.user == request.user and i.status == 'Delivered'],
+		'cancel': [i for i in WholeSaleProductOrders.objects.all() if i.user == request.user and i.status == 'Cancel'],
+
+	}
+	return render(request,'saler/myorders.html', params)
+
+# for adding a new product by seller 
 @login_required
 def add_product(request):
 	if request.user.is_superuser or request.user.is_staff:
@@ -261,7 +296,8 @@ def add_product(request):
 			i=1
 			sizes=[]
 			while i <= size_no:
-				sizes.append([request.POST.get(f'size{i}'),int(request.POST.get(f'quantity{i}'))])
+				if request.POST.get(f'size{i}'):
+					sizes.append([request.POST.get(f'size{i}'),int(request.POST.get(f'quantity{i}'))])
 				i+=1
 			Product(product_id2=prod_id2,shop=request.user,product_name=prod_name,category=category.objects.get(id=int(cat)),subcategory=subcategory,price=price,price_not=price_not,desc=desc,gst=gst_l,image1=image1).save()
 			p = Product.objects.filter(product_id2=prod_id2)[0]
@@ -301,6 +337,7 @@ def add_product(request):
 	else:
 		return redirect("/")
 
+# it will display all products of a seller
 @login_required
 def view_products(request):
 	if request.user.is_superuser or request.user.is_staff:
@@ -323,6 +360,7 @@ def view_products(request):
 	else:
 		return redirect("/")
 
+# Signup for Seller
 def seller_signup(request):
 	if request.user.is_authenticated:
 		return redirect('home')
@@ -349,6 +387,7 @@ def seller_signup(request):
 			form = SalerRegisterForm()
 	return render(request, 'saler/seller_signup.html', {'form':form, 'title':'Become a Seller'})
 
+# Seller Account Settings
 @login_required
 def account_settings(request):
 	if request.user.is_superuser or request.user.is_staff:
@@ -383,7 +422,7 @@ def account_settings(request):
 			s_form = UpdateSalerDetailForm(instance=request.user.salerdetail)
 			u_form = UserUpdateForm(instance=request.user)
 			acc_form = UpdateSalerAccountDetailForm(instance=request.user.salerdetail)
-			pass_change_form = PasswordChangeForm(request.user, request.POST)
+			pass_change_form = PasswordChangeForm(request.user)
 		detl = {
 			'u_form':u_form,
 			's_form':s_form,
@@ -396,6 +435,7 @@ def account_settings(request):
 	else:
 		return redirect("/")
 
+# This is a part of admin view in which all ordered products will display with address
 def admin2(request):
 	if request.user.is_superuser:
 		ordr = [i for i in Orders.objects.all() if i.status != 'Cancel' and i.status != 'On The Way' and i.status != 'Delivered'][::-1]

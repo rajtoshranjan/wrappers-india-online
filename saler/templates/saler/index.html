@@ -94,7 +94,7 @@
 									<img src="{{i.image1.url}}" class="img-responsive img-fluid" alt="">
 								</div>
 								<div class="thumb-content">
-									<b><a href="product/{{i.product_id}}" style="text-decoration: none; color: #231f20">
+									<b><a href="{% url 'SalerProductView' i.product_id %}" style="text-decoration: none; color: #231f20">
 											{{i.product_name}}</a></b>
 									<p class="item-price"><span><i class="fa fa-inr"
 												aria-hidden="true"></i>{{i.price}}</span></p>

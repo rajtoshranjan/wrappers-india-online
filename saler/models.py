@@ -153,6 +153,12 @@ class ProductSize(models.Model):
 	size = models.CharField(max_length=20)
 	quantity = models.IntegerField(default=0, null=True)
 
+class ProductReview(models.Model):
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	product = models.ForeignKey(Product, on_delete=models.CASCADE)
+	review = models.TextField()
+	time = models.DateTimeField(auto_now=True)
+
 class WholeSaleProduct(models.Model):
 	SEX_CHOICES = (("Male",'Male'),("Female",'Female'),("All",'All'))
 	product_id = models.BigAutoField(primary_key=True)
@@ -208,6 +214,13 @@ class WholeSaleProduct(models.Model):
 				img5.save(self.image5.path)
 	def __str__(self):
 		return f'{self.product_id}'
+
+class WholeSaleProductOrders(models.Model):
+	STATUS_CHOICES = (("Accepted",'Accepted'),("Packed",'Packed'),("On The Way",'On The Way'),("Delivered",'Delivered'),("Cancel",'Cancel'))
+	order_id = models.CharField(max_length=50,default='')
+	user = models.ForeignKey(User, default='', on_delete=models.CASCADE)
+	products = models.CharField(max_length=50)
+	status = models.CharField(max_length=15,choices=STATUS_CHOICES,default='')
 
 class dow(models.Model):
 	product = models.OneToOneField(Product, default="", verbose_name="Product Id", on_delete=models.CASCADE, null=True)

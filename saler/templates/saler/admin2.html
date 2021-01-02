@@ -1,46 +1,49 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{% extends 'admin/base.html' %}
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+{% block title %}All Orders{% endblock %}
 
-    <title>Wrappers India</title>
-  </head>
-  <body>
-  	<h2 style="display: inline;" class="ml-2">All Orders</h2>
-  	<a href="/wrappers/india/my/admin/pannel/home/" class="btn btn-outline-secondary m-2" style="float: right;">Admin Panel</a>
+{% block branding %}
+    <h1 style="display: inline;" class="ml-2">All Orders</h1>
+{% endblock %}
+
+{% block usertools %}
+  {{block.super}}
+  <div id="user-tools">
+    {% block welcome-msg %}
+      {{block.super}}
+    {% endblock %}
+    {% block userlinks  %}
+      {{block.super}}
+    {% endblock %}
+  </div>
+{% endblock %}
+
+  
+{% block pretitle %}<h3>All Orderd Products</h3>{% endblock %}
+
+{% block content %}
     <div class="container-fluid">
-    	<table class="table">
-		  <thead class="thead-dark">
-		    <tr>
-		      <th scope="col">order_id</th>
-		      <th scope="col">mobile</th>
-		      <th scope="col">alternate mobile</th>
-		      <th scope="col">Address</th>
-		    </tr>
-		  </thead>
-		  <tbody>
-		  	{% for i in orders %}
-		    <tr>
-		      <th scope="row">{{i.order_id}}</th>
-		      <td>{{i.user.userdetail.mobile}}</td>
-		      <td>{{i.user.userdetail.alternate_mobile}}</td>
-		      <td>{{i.user.userdetail.address}}, {{i.user.userdetail.landmark}}, {{i.user.userdetail.locality}}, {{i.user.userdetail.city}}, {{i.user.userdetail.state}}, {{i.user.userdetail.pincode}}</td>
-		    </tr>
-		    {% endfor %}
-		  </tbody>
-		</table>
+      <table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">order_id</th>
+          <th scope="col">mobile</th>
+          <th scope="col">alternate mobile</th>
+          <th scope="col">Address</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for i in orders %}
+        <tr>
+          <th scope="row">{{i.order_id}}</th>
+          <td>{{i.user.userdetail.mobile}}</td>
+          <td>{{i.user.userdetail.alternate_mobile}}</td>
+          <td>{{i.user.userdetail.address}}, {{i.user.userdetail.landmark}}, {{i.user.userdetail.locality}}, {{i.user.userdetail.city}}, {{i.user.userdetail.state}}, {{i.user.userdetail.pincode}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
 
     </div>
-
-    <!-- Optional JavaScript
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-  </body>
-</html>
+  {{ block.super }}
+{% endblock %}
