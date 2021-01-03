@@ -237,7 +237,7 @@ def checkout(request):
 					product1 = item.product_id+'|'+str(item.number)+','
 					WholeSaleProductOrders(order_id=order_id,user=request.user,products=product1).save()
 					item.delete()
-				return redirect('/myorders')
+				return redirect('seller_orders')
 		else:
 			address_form = SalerAddressForm(instance=request.user.salerdetail)
 

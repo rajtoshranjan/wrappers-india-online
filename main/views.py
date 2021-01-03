@@ -312,7 +312,7 @@ def delete_from_cart(request):
 	else:
 		return HttpResponse("")
 
-MERCHANT_KEY = 'wPyn90L7Z9#4%8!Q'
+MERCHANT_KEY = 'YOUR_MERCHANT_KEY'
 @login_required
 def order_now(request):
 	allProds =[]
@@ -366,7 +366,7 @@ def order_now(request):
 	
 				param_dict = {
 
-		                'MID': 'jrKRuI18276169326503',
+		                'MID': 'YOUR_MID',
 		                'ORDER_ID': str(o_id),
 		                'TXN_AMOUNT': str(subtotal+tax+delev),
 		                'CUST_ID': request.user.username,
@@ -458,7 +458,7 @@ def checkout(request):
 			    trend(product = Product.objects.filter(product_id=int(item.product_id)).first(), number=1)
 		param_dict = {
 
-                'MID': 'jrKRuI18276169326503',
+                'MID': 'YOUR_MID',
                 'ORDER_ID': str(o_id),
                 'TXN_AMOUNT': str(subtotal+tax+delev),
                 'CUST_ID': request.user.username,

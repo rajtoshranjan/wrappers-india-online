@@ -1,5 +1,5 @@
 from django import template
-from saler.models import Product
+from saler.models import WholeSaleProduct
 
 register = template.Library()
 
@@ -16,5 +16,5 @@ def remfl(str1, key):
 @register.filter(name='product')
 def product(str1, key):
 	if str1.split(key)[0] != '':
-		ppp = Product.objects.filter(product_id=str1.split(key)[0]).first()
+		ppp = WholeSaleProduct.objects.filter(product_id=str1.split(key)[0]).first()
 		return [ppp.product_name,ppp.image1.url,ppp.price]

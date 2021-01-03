@@ -1,6 +1,8 @@
 {% extends 'saler/base.html' %}
 {% load static %}
+{% load seller_app_tags %}
 {% block saler_head %}
+
   <title>{{request.user.first_name}} Orders</title>
   <style type="text/css">
     body {
@@ -125,7 +127,7 @@ h2 {
 </style>
 {% endblock saler_head %}
 {% block saler_body %}
-{% block main_body %}
+
 <div style="width: 100%; text-align: center;">
     <div class="custom-control custom-radio custom-control-inline" onclick="document.getElementById('orders').style.display = 'block';document.getElementById('delivered').style.display = 'none';document.getElementById('cancel').style.display = 'none';">
       <input type="radio" id="customRadioInline1" name="customRadioInline1" class="custom-control-input" checked="">
@@ -334,4 +336,5 @@ h2 {
         </div>
     </div>
 </div>
-{% endblock saler_js %}
+
+{% endblock  %}
