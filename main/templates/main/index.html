@@ -363,6 +363,7 @@
 												aria-hidden="true"></i>{{i.0.price}}</span></p>
 
 								<div>
+										{% if i.1 %}
 										<a p_id="{{i.0.product_id}}" class="btn btn-primary oprbtn" id="ord{{i.0.product_id}}">Order Now</a>
 										<div id="ord{{i.0.product_id}}sizesof" style="display: none;">
 													{% for me in i.1 %}
@@ -370,7 +371,7 @@
 														<input type="text" name="prod_id" value="{{i.0.product_id}}" style="display: none;">
 														<input type="size" name="prod_size" value="{{me.size}}" style="display: none;">
 														<button type="submit" class="btn pt-1 pb-1 pr-2 pl-2">{{me.size}}</button>
-													</form>		
+													</form>	
 													{% endfor %}
 												</div>
 												<a p_id="{{i.0.product_id}}" class="btn btn-primary oprbtn"  style="padding: 5px 10px 5px 5px;" id="atc{{i.0.product_id}}"><i class="fa fa-cart-plus" aria-hidden="true"></i></a>
@@ -379,6 +380,14 @@
 													<a prod_id="{{i.0.product_id}}" class="btn pt-1 pb-1 pr-2 pl-2 add_to_cart">{{me.size}}</a>
 													{% endfor %}
 												</div>
+										{% else %}
+											<form method="GET" style="display: inline;" action="/order_now">
+														<input type="text" name="prod_id" value="{{i.0.product_id}}" style="display: none;">
+										
+														<button type="submit" class="btn btn-primary oprbtn">Order Now</button>
+													</form>	
+												<a prod_id="{{i.0.product_id}}" class="btn pt-1 pb-1 pr-2 pl-2 add_to_cart"><i class="fa fa-cart-plus" aria-hidden="true"></i></a>
+										{% endif %}
 									</div>
 							</div>
 						</div>
