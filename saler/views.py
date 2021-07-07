@@ -55,7 +55,7 @@ def dashboard(request):
 				o.save()
 			if st == 'Delivered':
 				o = Orders.objects.filter(order_id=odrr).first()
-				o.status = 'On The Way'
+				o.status = 'Delivered'
 				o.save()
 		ordr = [i for i in Orders.objects.filter(saler=request.user) if i.status != 'Cancel' and i.status != 'On The Way' and i.status != 'Delivered'][::-1]
 		params = {
